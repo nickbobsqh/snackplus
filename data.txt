@@ -6,4 +6,4 @@
 # Download Only | https://picsum.photos/300/450?2 | 1 | 1 | https://example.com/a.mp4 | |
 # Folder Only | https://picsum.photos/300/450?3 | | | | | https://example.com/folder2
 
-SpongeBob SquarePants | https://m.media-amazon.com/images/M/MV5BNzdmMDk4ODQtYzQ5My00ZjFmLTk5MGMtOWYxZDdjY2U2NmQxXkEyXkFqcGc@._V1_QL75_UX1200_.jpg | 1 | 1, 2, 3 | https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E01E2E03.Help.Wanted-Reef.Blower.Tea.at.the.Treedome.1080p.WEB-DL.mkv |  | 
+SpongeBob SquarePants | ./covers/spongebobsquarepants.png | 1 | 1a "Help Wanted", 1b "Reef Blower", 1c "Tea at the Treedome" | https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E01E2E03.Help.Wanted-Reef.Blower.Tea.at.the.Treedome.1080p.WEB-DL.mkv |  | 
