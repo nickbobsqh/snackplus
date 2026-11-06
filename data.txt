@@ -1,0 +1,7 @@
+# show | cover | season | episode | download link | watch link | folder link
+# Empty field = unavailable (button greys out). Lines starting with # are ignored.
+# Example Show | https://picsum.photos/300/450?1 | 1 | 1 | https://example.com/s1e1.mp4 | https://example.com/s1e1.mp4 | https://example.com/folder
+# Example Show | | 1 | 2 | https://example.com/s1e2.mp4 | https://example.com/s1e2.mp4 |
+# Example Show | | 2 | 1 | https://example.com/s2e1.mp4 | |
+# Download Only | https://picsum.photos/300/450?2 | 1 | 1 | https://example.com/a.mp4 | |
+# Folder Only | https://picsum.photos/300/450?3 | | | | | https://example.com/folder2
