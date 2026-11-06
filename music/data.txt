@@ -1,5 +1,0 @@
-# title | artist | cover | audio link | download link
-# audio link must be a direct .mp3/.m4a/.ogg file. Empty download = greyed out.
-# Lines starting with # are ignored.
-Example Song | Example Artist | https://picsum.photos/200/200?10 | https://example.com/song1.mp3 | https://example.com/song1.mp3
-Another Track | Example Artist | https://picsum.photos/200/200?11 | https://example.com/song2.mp3 |
