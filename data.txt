@@ -1,0 +1,3 @@
+# show | cover | season | episode | download link | watch link | folder link | type
+# type: write "movie" for a movie (leave season/episode empty). Empty = series.
+# Empty field = unavailable (button greys out). Lines starting with # are ignored.
