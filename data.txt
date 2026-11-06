@@ -1,3 +1,6 @@
 # show | cover | season | episode | download link | watch link | folder link | type
 # type: write "movie" for a movie (leave season/episode empty). Empty = series.
 # Empty field = unavailable (button greys out). Lines starting with # are ignored.
+
+#SpongeBob
+The SpongeBob SquarePants Movie | https://upload.wikimedia.org/wikipedia/en/9/9b/The_SpongeBob_SquarePants_Movie_official_poster.jpg | | | https://drive.google.com/uc?export=download&id=17w2p7GPK-nxfOfQ4oG1qc9MNAy3J68zb | | | Movie
