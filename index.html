@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SNACK+ Hub</title>
+<link rel="icon" href="icon.ico">
+<link rel="stylesheet" href="shared/theme.css">
+<style>
+main{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:24px;padding:24px;max-width:1200px;margin:auto}
+.app{display:block;text-decoration:none;color:var(--text);border-radius:26px;padding:22px;position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s}
+.app:hover{transform:translateY(-5px);box-shadow:var(--edge),0 16px 40px #000a,0 0 24px #FF670044}
+.app .ico{font-size:40px;margin-bottom:10px}
+.app h2{margin:0 0 6px;color:var(--accent)}
+.app p{margin:0;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<header class="topbar glass">
+  <img src="logo.png" alt="" class="logo" style="height:42px" onerror="this.style.display='none'">
+  <h1>SNACK<span>+</span></h1>
+</header>
+<main id="apps"></main>
+<script>
+// Add or remove apps here. Each app lives in its own folder.
+const APPS = [
+  { name: 'Streaming', icon: '🎬', folder: 'streaming/', desc: 'Shows and movies to watch or download.' },
+  { name: 'Music', icon: '🎵', folder: 'music/', desc: 'Play your music library.' }
+];
+const wrap = document.getElementById('apps');
+APPS.forEach(a => {
+  const x = document.createElement('a');
+  x.className = 'app glass';
+  x.href = a.folder;
+  x.innerHTML = '<div class="ico"></div><h2></h2><p></p>';
+  x.querySelector('.ico').textContent = a.icon;
+  x.querySelector('h2').textContent = a.name;
+  x.querySelector('p').textContent = a.desc;
+  wrap.append(x);
+});
+</script>
+</body>
+</html>

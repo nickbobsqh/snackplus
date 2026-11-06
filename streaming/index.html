@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SNACK+ Streaming</title>
+<link rel="icon" href="../icon.ico">
+<link rel="stylesheet" href="../shared/theme.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar glass">
+  <a class="back" href="../">&larr; Hub</a>
+  <img src="../logo.png" alt="" class="logo" style="height:42px" onerror="this.style.display='none'">
+  <h1>Streaming Service</h1>
+  <nav class="tabs">
+    <button class="tab active" data-f="all">All</button>
+    <button class="tab" data-f="series">Shows</button>
+    <button class="tab" data-f="movie">Movies</button>
+  </nav>
+  <input id="search" class="search" type="search" placeholder="Search shows...">
+</header>
+<main id="grid"></main>
+<p id="empty" hidden>No shows found.</p>
+
+<div id="modal" class="modal" hidden>
+  <div class="panel">
+    <button class="close" id="close" aria-label="Close">&times;</button>
+    <h2 id="mTitle"></h2>
+    <div id="mBody"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
