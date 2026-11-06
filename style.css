@@ -43,4 +43,7 @@ main{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:
 .ep .btn{padding:6px 14px;white-space:nowrap}
 .ep.playing{border-color:var(--accent);box-shadow:0 0 14px #FF670077,inset 0 1px 1px #ffffff40}
 video{width:100%;border-radius:18px;background:#000;max-height:60vh;margin-bottom:10px;box-shadow:0 8px 30px #000a}
+.tabs{display:flex;gap:8px;justify-content:center;margin:6px 0}
+.tab{padding:8px 20px;border-radius:20px;border:1px solid #ffffff44;background:linear-gradient(180deg,#ffffff2e,#ffffff0d);color:var(--text);font-weight:600;cursor:pointer;backdrop-filter:blur(8px)}
+.tab.active{background:linear-gradient(180deg,#ff8533dd,#FF6700cc);border-color:#ffb27a;box-shadow:0 0 16px #FF670077}
 #empty{text-align:center;color:var(--muted)}
