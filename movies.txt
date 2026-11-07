@@ -1,21 +1,141 @@
 [
   {
-    "id": "tsm-soow",
-    "type": "movie",
-    "title": "The SpongeBob Movie: Sponge Out of Water",
-    "year": "2015",
+    "id": "sbsp",
+    "type": "show",
+    "title": "SpongeBob SquarePants",
+    "year": "1999",
     "genre": "",
-    "rating": "PG",
-    "duration": "93",
-    "description": "When a diabolical pirate above the sea steals the secret Krabby Patty formula, SpongeBob and his friends team up in order to get it back.",
-    "cover": "https://upload.wikimedia.org/wikipedia/en/5/54/The_SpongeBob_Movie%2C_Sponge_Out_of_Water_%282015_film%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "rating": "TV-Y7",
+    "duration": "17",
+    "description": "The misadventures of a talking sea sponge who works at a fast food restaurant, attends a boating school, and lives in a pineapple under the sea.",
+    "cover": "",
     "added": "2026-11-07",
     "new": false,
     "trending": 0,
     "subbed": false,
     "dubbed": false,
     "exclusive": false,
-    "watch": "https://persian21.asset.aparat.com/aparat-video/dc9b18e9aa78daff44e6025b5fe2c0aa68969617-1080p.mp4?wmsAuthSign=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImM0ZWIxMWE1OTMwMWVkMGQxY2FlZmU5ZmJmZGU4Njk0IiwiZXhwIjoxNzk0MDgwMzYyLCJpc3MiOiJTYWJhIElkZWEgR1NJRyJ9.U9gSLneJakZIm8j6SGF860nLgm_xqd-ZToilzDGM0O0",
-    "download": "https://persian21.asset.aparat.com/aparat-video/dc9b18e9aa78daff44e6025b5fe2c0aa68969617-1080p.mp4?wmsAuthSign=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImM0ZWIxMWE1OTMwMWVkMGQxY2FlZmU5ZmJmZGU4Njk0IiwiZXhwIjoxNzk0MDgwMzYyLCJpc3MiOiJTYWJhIElkZWEgR1NJRyJ9.U9gSLneJakZIm8j6SGF860nLgm_xqd-ZToilzDGM0O0"
+    "episodes": [
+      {
+        "title": "Episode 1",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E01E2E03.Help.Wanted-Reef.Blower.Tea.at.the.Treedome.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E01E2E03.Help.Wanted-Reef.Blower.Tea.at.the.Treedome.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 2",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E04E05.Bubblestand-Ripped.Pants.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E04E05.Bubblestand-Ripped.Pants.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 3",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E06E07.Jellyfishing-Plankton!.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E06E07.Jellyfishing-Plankton!.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 4",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E08E09.Nau.ghty.Nautical.Neighbors-Boating.School.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E08E09.Nau.ghty.Nautical.Neighbors-Boating.School.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 5",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E10E11.Pizza.Delivery-Home.Sweet.Pineapple.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E10E11.Pizza.Delivery-Home.Sweet.Pineapple.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 6",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E12E13.Mermaid.Man.and.Barnacle.Boy-Pickles.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E12E13.Mermaid.Man.and.Barnacle.Boy-Pickles.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 7",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E14E15.Hall.Monitor-Jellyfish.Jam.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E14E15.Hall.Monitor-Jellyfish.Jam.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 8",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E16E17.Sandys.Rocket-Squeaky.Boots.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E16E17.Sandys.Rocket-Squeaky.Boots.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 9",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E18E19.Nature.Pants-Opposite.Day.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E18E19.Nature.Pants-Opposite.Day.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 10",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E20E21.Culture.Shock-F.U.N.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E20E21.Culture.Shock-F.U.N.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 11",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E22E23.MuscleBob.BuffPants-Squidward.the.Unfriendly.Ghost.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E22E23.MuscleBob.BuffPants-Squidward.the.Unfriendly.Ghost.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 12",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E24E25.The.Chaperone-Employee.of.the.Month.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E24E25.The.Chaperone-Employee.of.the.Month.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 13",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E26E27.Scaredy.Pants-I.Was.a.Teenage.Gary.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E26E27.Scaredy.Pants-I.Was.a.Teenage.Gary.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 14",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E28E29.SpongeBob.129-Karate.Choppers.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E28E29.SpongeBob.129-Karate.Choppers.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 15",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E30E31.Sleepy.Time-Suds.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E30E31.Sleepy.Time-Suds.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 16",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E32E33.Valentines.Day-The.Paper.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E32E33.Valentines.Day-The.Paper.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 17",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E34E35.Arrgh!-Rock.Bottom.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E34E35.Arrgh!-Rock.Bottom.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 18",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E36E37.Texas-Walking.Small.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E36E37.Texas-Walking.Small.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 19",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E38E39.Fools.In.April-Neptunes.Spatula.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E38E39.Fools.In.April-Neptunes.Spatula.1080p.WEB-DL.mkv",
+        "season": 1
+      },
+      {
+        "title": "Episode 20",
+        "watch": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E40E41.Hooky-Mermaid.Man.and.Barnacle.Boy.II.1080p.WEB-DL.mkv",
+        "download": "https://hub.irdanlod.top/S6/Animations/SpongeBob/S01/1080p/SpongeBob.SquarePants.S01E40E41.Hooky-Mermaid.Man.and.Barnacle.Boy.II.1080p.WEB-DL.mkv",
+        "season": 1
+      }
+    ]
   }
 ]
