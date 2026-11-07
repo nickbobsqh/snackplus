@@ -1,4 +1,4 @@
-const TABS=["Recently Added","New","Trending","Subbed","Dubbed","Exclusives","Saved","Other Services"];
+const TABS=["Recently Added","New","Trending","Original Language","Subbed","Dubbed","Exclusives","Saved","Other Services"];
 const $=s=>document.querySelector(s);
 const store={get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
 let items=[],tab=0,sortNewest=true,saved=store.get("snack_saved",[]);
@@ -38,11 +38,12 @@ function filtered(){
     case 0:l.sort(byAdded);if(!sortNewest)l.reverse();break;
     case 1:l=l.filter(i=>i.new).sort(byAdded);if(!sortNewest)l.reverse();break;
     case 2:l.sort((a,b)=>(b.trending||0)-(a.trending||0));l=l.filter(i=>i.trending>0);break;
-    case 3:l=l.filter(i=>i.subbed);break;
-    case 4:l=l.filter(i=>i.dubbed);break;
-    case 5:l=l.filter(i=>i.exclusive);break;
-    case 6:l=l.filter(i=>saved.includes(i.id));break;
-    case 7:return null;
+    case 3:l=l.filter(i=>!i.subbed&&!i.dubbed);break;
+    case 4:l=l.filter(i=>i.subbed);break;
+    case 5:l=l.filter(i=>i.dubbed);break;
+    case 6:l=l.filter(i=>i.exclusive);break;
+    case 7:l=l.filter(i=>saved.includes(i.id));break;
+    case 8:return null;
   }
   return l;
 }
@@ -56,13 +57,13 @@ function render(){
     $("#sort").value=sortNewest?"n":"o";
     $("#sort").onchange=e=>{sortNewest=e.target.value=="n";render()};
   }
-  if(!q&&tab==6){
+  if(!q&&tab==7){
     tools.innerHTML=`<button class="btn" id="exp">Export</button> <button class="btn" id="imp">Import</button>`;
     $("#exp").onclick=exportSaved;$("#imp").onclick=importSaved;
   }
   const l=filtered(),g=$("#grid");
   if(l===null){g.innerHTML=`<div class="empty"><h2>This Page is a W.I.P</h2></div>`;return}
-  if(!l.length){g.innerHTML=`<div class="empty">${tab==6&&!q?"Nothing saved yet. Tap the ♥ on a title to save it.":"Nothing here."}</div>`;return}
+  if(!l.length){g.innerHTML=`<div class="empty">${tab==7&&!q?"Nothing saved yet. Tap the ♥ on a title to save it.":"Nothing here."}</div>`;return}
   g.innerHTML=l.map(card).join("");
 }
 
