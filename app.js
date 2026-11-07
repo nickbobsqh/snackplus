@@ -109,10 +109,10 @@ async function share(id,ep){
   try{await navigator.clipboard.writeText(url);toast("Link copied")}catch{prompt("Copy this link:",url)}
 }
 function episodes(it,keepHash){
-  const rows=(it.episodes||[]).map((e,n)=>`<div class="ep"><span>${esc(e.title)}</span><div class="btns">
+  const eps=it.episodes||[],rows=[...new Set(eps.map(e=>e.season||1))].sort((a,b)=>a-b).map(s=>`<h3 style="margin:12px 0 4px">Season ${s}</h3>`+eps.map((e,n)=>[e,n]).filter(([e])=>(e.season||1)==s).map(([e,n])=>`<div class="ep"><span>${esc(e.title)}</span><div class="btns">
    <button class="btn pri" data-e="w${n}" ${e.watch?"":"disabled"}>Watch</button>
    <button class="btn" data-e="d${n}" ${e.download?"":"disabled"}>Download</button>
-   <button class="btn" data-e="s${n}">Share</button></div></div>`).join("");
+   <button class="btn" data-e="s${n}">Share</button></div></div>`).join("")).join("");
   openModal(`<h2>${esc(it.title)} - Episodes</h2>${rows||"<p>No episodes yet.</p>"}<div class="row"><button class="btn" data-close>Close</button></div>`);
   $("#dialog").onclick=ev=>{const b=ev.target.closest("[data-e]");if(!b)return;
     const n=+b.dataset.e.slice(1),e=it.episodes[n],k=b.dataset.e[0];
