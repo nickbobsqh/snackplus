@@ -60,7 +60,7 @@ $("#form").addEventListener("input",e=>{
 $("#form").addEventListener("change",e=>{if(e.target.dataset.k=="id"){const d=data[cur];d.id=uniqueId(slug(d.id),d);e.target.value=d.id}});
 $("#form").addEventListener("click",e=>{
   const d=data[cur],b=e.target.closest("button");if(!b)return;
-  if(b.id=="addE"){d.episodes.push({title:"Episode "+(d.episodes.length+1),watch:"",download:"",season:d.episodes.at(-1)?.season||1});dirty=true;form()}
+  if(b.id=="addE"){const season=d.episodes.at(-1)?.season||1,num=d.episodes.filter(e=>(e.season||1)==season).length+1;d.episodes.push({title:"Episode "+num,watch:"",download:"",season});dirty=true;form()}
   else if(b.dataset.mu!=null){const n=+b.dataset.mu;if(n>0){[d.episodes[n-1],d.episodes[n]]=[d.episodes[n],d.episodes[n-1]];dirty=true;form()}}
   else if(b.dataset.md!=null){const n=+b.dataset.md;if(n<d.episodes.length-1){[d.episodes[n+1],d.episodes[n]]=[d.episodes[n],d.episodes[n+1]];dirty=true;form()}}
   else if(b.dataset.rm!=null){d.episodes.splice(+b.dataset.rm,1);dirty=true;form()}
