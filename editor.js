@@ -16,7 +16,7 @@ function draw(){
 $("#items").onclick=e=>{const l=e.target.closest(".li");if(l){cur=+l.dataset.i;draw()}};
 
 function add(type){
-  const o={id:"",type,title:"New "+type,year:new Date().getFullYear(),genre:"",rating:"",duration:"",description:"",cover:"",added:today(),new:true,trending:0,subbed:false,dubbed:false,exclusive:false};
+  const o={id:"",type,title:"New "+type,year:new Date().getFullYear(),genre:"",rating:"",duration:"",description:"",cover:"",added:today(),subbed:false,dubbed:false,exclusive:false};
   if(type=="movie"){o.watch="";o.download=""}else o.episodes=[{title:"Episode 1",watch:"",download:""}];
   o.id=uniqueId(slug(o.title));data.push(o);cur=data.length-1;dirty=true;draw();
 }
@@ -33,10 +33,9 @@ function form(){
    <label>Type<select class="field" data-k="type" disabled><option>${d.type}</option></select></label>${t("year","Year")}
    ${t("genre","Genre")}${t("rating","Rating")}
    ${t("duration","Duration / seasons")}${t("added","Date added","","date")}
-   ${t("trending","Trending score (0 = hidden)","","number")}
    <label class="w">Description<textarea class="field" rows="3" data-k="description">${esc(d.description)}</textarea></label>
    <label class="w">Cover image path or URL<div style="display:flex;gap:10px"><input class="field" data-k="cover" value="${esc(d.cover)}"><img class="preview" id="pv" src="${esc(d.cover)}" onerror="this.style.visibility='hidden'" onload="this.style.visibility='visible'"></div></label>
-   <div class="chk">${c("new","New")}${c("subbed","Subbed (Persian subs)")}${c("dubbed","Dubbed (Persian)")}${c("exclusive","Exclusive (Dubbed by SNACK)")}</div>`;
+   <div class="chk">${c("subbed","Subbed (Persian subs)")}${c("dubbed","Dubbed (Persian)")}${c("exclusive","Exclusive (Dubbed by SNACK)")}</div>`;
   if(d.type=="movie")h+=`<label class="w">Video link (used for Watch and Download)<input class="field" data-k="link" value="${esc(d.watch||d.download||"")}"></label>`;
   else{
     h+=`<div class="w"><b>Episodes</b><div id="eps" style="margin-top:8px">`+(d.episodes||[]).map((e,n)=>`<div class="epr">
@@ -73,6 +72,7 @@ function clean(){
   return data.map(d=>{const o={...d};
     if(!o.id)o.id=uniqueId(slug(o.title),d);
     o.rating=o.rating===""||isNaN(+o.rating)?o.rating:+o.rating;
+    delete o.new;delete o.trending;
     return o});
 }
 $("#save").onclick=async()=>{
