@@ -112,7 +112,7 @@ function episodes(it,season){
   const seasons=[...new Set(eps.map(e=>e.season||1))].sort((a,b)=>a-b);
   if(season==null){
     const rows=seasons.map(s=>{const n=eps.filter(e=>(e.season||1)==s).length;
-      return `<button class="btn season" data-s="${s}">Season ${s} <span>${n} episode${n==1?"":"s"}</span></button>`}).join("");
+      return `<button class="btn season" data-s="${s}">Season ${s} - <span>${n} episode${n==1?"":"s"}</span></button>`}).join("");
     openModal(`<h2>${esc(it.title)} - Seasons</h2>${rows||"<p>No episodes yet.</p>"}<div class="row"><button class="btn" data-close>Close</button></div>`);
   }else{
     const rows=eps.map((e,n)=>[e,n]).filter(([e])=>(e.season||1)==season).map(([e,n])=>`<div class="ep"><span>${esc(e.title)}</span><div class="btns">
