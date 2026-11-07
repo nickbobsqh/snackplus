@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SNACK+ Editor</title>
+<link rel="icon" href="icon.ico">
+<link rel="stylesheet" href="style.css">
+<style>
+body{overflow:auto}
+.ed{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:14px;display:grid;grid-template-columns:280px 1fr;gap:12px;min-height:100vh}
+.ed .head{grid-column:1/-1;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:24px;padding:10px 16px}
+.ed .head img{height:50px}.ed .head .sp{flex:1}
+.list{border-radius:24px;padding:10px;display:flex;flex-direction:column;gap:6px;max-height:calc(100vh - 120px);overflow:auto;position:sticky;top:14px;align-self:start}
+.li{padding:10px 12px;border-radius:14px;cursor:pointer;border:1px solid transparent;font-size:14px}
+.li:hover{background:rgba(255,255,255,.08)}.li.on{background:rgba(232,89,12,.35);border-color:var(--accent2)}
+.li small{display:block;opacity:.6}
+.form{border-radius:24px;padding:20px}
+.f{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f label{display:flex;flex-direction:column;gap:4px;font-size:12px;opacity:.9}
+.f .w{grid-column:1/-1}
+.f .field{width:100%;font-family:inherit}
+.chk{display:flex;gap:16px;flex-wrap:wrap;grid-column:1/-1}
+.chk label{flex-direction:row;align-items:center;gap:6px;font-size:14px}
+.epr{display:grid;grid-template-columns:1.2fr 2fr 2fr auto;gap:6px;margin-bottom:6px}
+.preview{width:90px;aspect-ratio:2/3;object-fit:cover;border-radius:10px;background:#3b0f6b}
+.danger{background:#7a1a1a}
+@media(max-width:800px){.ed{grid-template-columns:1fr}.list{position:static;max-height:240px}.f{grid-template-columns:1fr}.epr{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div>
+<div class="ed">
+  <div class="head glass">
+    <img src="logo.png" alt="SNACK+"><b>Editor</b><span class="sp"></span>
+    <button class="btn" id="open">Open movies.txt</button>
+    <button class="btn" id="reload">Reload from site</button>
+    <button class="btn pri" id="save">Save</button>
+  </div>
+  <div class="list glass"><button class="btn pri" id="addM">+ Movie</button><button class="btn pri" id="addS">+ Show</button><div id="items"></div></div>
+  <div class="form glass" id="form"></div>
+</div>
+<div id="toast" class="toast"></div>
+<script src="editor.js"></script>
+</body>
+</html>
