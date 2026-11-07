@@ -15,7 +15,7 @@
     "subbed": false,
     "dubbed": false,
     "exclusive": false,
-    "watch": "https://persian21.asset.aparat.com/aparat-video/dc9b18e9aa78daff44e6025b5fe2c0aa68969617-1080p.mp4",
-    "download": "https://persian21.asset.aparat.com/aparat-video/dc9b18e9aa78daff44e6025b5fe2c0aa68969617-1080p.mp4"
+    "watch": "https://persian21.asset.aparat.com/aparat-video/dc9b18e9aa78daff44e6025b5fe2c0aa68969617-1080p.mp4?wmsAuthSign=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImM0ZWIxMWE1OTMwMWVkMGQxY2FlZmU5ZmJmZGU4Njk0IiwiZXhwIjoxNzk0MDgwMzYyLCJpc3MiOiJTYWJhIElkZWEgR1NJRyJ9.U9gSLneJakZIm8j6SGF860nLgm_xqd-ZToilzDGM0O0",
+    "download": "https://persian21.asset.aparat.com/aparat-video/dc9b18e9aa78daff44e6025b5fe2c0aa68969617-1080p.mp4?wmsAuthSign=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImM0ZWIxMWE1OTMwMWVkMGQxY2FlZmU5ZmJmZGU4Njk0IiwiZXhwIjoxNzk0MDgwMzYyLCJpc3MiOiJTYWJhIElkZWEgR1NJRyJ9.U9gSLneJakZIm8j6SGF860nLgm_xqd-ZToilzDGM0O0"
   }
 ]
