@@ -43,7 +43,7 @@ function form(){
      <input class="field" type="number" min="1" data-e="${n}" data-ek="season" placeholder="Season" value="${e.season||1}">
      <input class="field" data-e="${n}" data-ek="title" placeholder="Title" value="${esc(e.title)}">
      <input class="field" data-e="${n}" data-ek="link" placeholder="Video link" value="${esc(e.watch||e.download||"")}">
-     <button class="btn" data-rm="${n}">✕</button></div>`).join("")+`</div><button class="btn" id="addE">+ Episode</button></div>`;
+     <button class="btn" data-mu="${n}" ${n==0?"disabled":""}>↑</button><button class="btn" data-md="${n}" ${n==(d.episodes.length-1)?"disabled":""}>↓</button><button class="btn" data-rm="${n}">✕</button></div>`).join("")+`</div><button class="btn" id="addE">+ Episode</button></div>`;
   }
   h+=`</div><div class="row" style="margin-top:16px"><button class="btn" id="up">↑ Move up</button><button class="btn" id="dn">↓ Move down</button><button class="btn danger" id="del">Delete</button></div>`;
   f.innerHTML=h;
@@ -61,6 +61,8 @@ $("#form").addEventListener("change",e=>{if(e.target.dataset.k=="id"){const d=da
 $("#form").addEventListener("click",e=>{
   const d=data[cur],b=e.target.closest("button");if(!b)return;
   if(b.id=="addE"){d.episodes.push({title:"Episode "+(d.episodes.length+1),watch:"",download:"",season:d.episodes.at(-1)?.season||1});dirty=true;form()}
+  else if(b.dataset.mu!=null){const n=+b.dataset.mu;if(n>0){[d.episodes[n-1],d.episodes[n]]=[d.episodes[n],d.episodes[n-1]];dirty=true;form()}}
+  else if(b.dataset.md!=null){const n=+b.dataset.md;if(n<d.episodes.length-1){[d.episodes[n+1],d.episodes[n]]=[d.episodes[n],d.episodes[n+1]];dirty=true;form()}}
   else if(b.dataset.rm!=null){d.episodes.splice(+b.dataset.rm,1);dirty=true;form()}
   else if(b.id=="del"){if(confirm("Delete "+d.title+"?")){data.splice(cur,1);cur=Math.min(cur,data.length-1);dirty=true;draw()}}
   else if(b.id=="up"&&cur>0){[data[cur-1],data[cur]]=[data[cur],data[cur-1]];cur--;dirty=true;draw()}
