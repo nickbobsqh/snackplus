@@ -10,8 +10,6 @@
     "description": "The misadventures of a talking sea sponge who works at a fast food restaurant, attends a boating school, and lives in a pineapple under the sea.",
     "cover": "https://m.media-amazon.com/images/M/MV5BMTY2NGUzMWItYjE3Zi00YWFiLTlmYzYtMjYwZjM3YWMxMDRiXkEyXkFqcGc@._V1_.jpg",
     "added": "2026-11-07",
-    "new": false,
-    "trending": 0,
     "subbed": false,
     "dubbed": false,
     "exclusive": false,
