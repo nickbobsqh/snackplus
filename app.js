@@ -107,13 +107,24 @@ async function share(id,ep){
   const url=location.origin+location.pathname+"#"+id+(ep!=null?"/"+ep:"");
   try{await navigator.clipboard.writeText(url);toast("Link copied")}catch{prompt("Copy this link:",url)}
 }
-function episodes(it,keepHash){
-  const eps=it.episodes||[],rows=[...new Set(eps.map(e=>e.season||1))].sort((a,b)=>a-b).map(s=>`<h3 style="margin:12px 0 4px">Season ${s}</h3>`+eps.map((e,n)=>[e,n]).filter(([e])=>(e.season||1)==s).map(([e,n])=>`<div class="ep"><span>${esc(e.title)}</span><div class="btns">
+function episodes(it,season){
+  const eps=it.episodes||[];
+  const seasons=[...new Set(eps.map(e=>e.season||1))].sort((a,b)=>a-b);
+  if(season==null){
+    const rows=seasons.map(s=>{const n=eps.filter(e=>(e.season||1)==s).length;
+      return `<button class="btn season" data-s="${s}">Season ${s} <span>${n} episode${n==1?"":"s"}</span></button>`}).join("");
+    openModal(`<h2>${esc(it.title)} - Seasons</h2>${rows||"<p>No episodes yet.</p>"}<div class="row"><button class="btn" data-close>Close</button></div>`);
+  }else{
+    const rows=eps.map((e,n)=>[e,n]).filter(([e])=>(e.season||1)==season).map(([e,n])=>`<div class="ep"><span>${esc(e.title)}</span><div class="btns">
    <button class="btn pri" data-e="w${n}" ${e.watch?"":"disabled"}>Watch</button>
    <button class="btn" data-e="d${n}" ${e.download?"":"disabled"}>Download</button>
-   <button class="btn" data-e="s${n}">Share</button></div></div>`).join("")).join("");
-  openModal(`<h2>${esc(it.title)} - Episodes</h2>${rows||"<p>No episodes yet.</p>"}<div class="row"><button class="btn" data-close>Close</button></div>`);
-  $("#dialog").onclick=ev=>{const b=ev.target.closest("[data-e]");if(!b)return;
+   <button class="btn" data-e="s${n}">Share</button></div></div>`).join("");
+    openModal(`<h2>${esc(it.title)} - Season ${season}</h2>${rows||"<p>No episodes in this season.</p>"}<div class="row"><button class="btn" data-back>Back to seasons</button><button class="btn" data-close>Close</button></div>`);
+  }
+  $("#dialog").onclick=ev=>{
+    if(ev.target.closest("[data-back]"))return episodes(it);
+    const sb=ev.target.closest("[data-s]");if(sb)return episodes(it,+sb.dataset.s);
+    const b=ev.target.closest("[data-e]");if(!b)return;
     const n=+b.dataset.e.slice(1),e=it.episodes[n],k=b.dataset.e[0];
     if(k=="w")play(e.watch,it.title+" - "+e.title);else if(k=="d")download(e.download,e.title);else share(it.id,n)};
 }
