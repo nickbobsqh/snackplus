@@ -95,10 +95,13 @@ function closeModal(){$("#modal").classList.add("hidden");$("#dialog").innerHTML
 $("#modal").onclick=e=>{if(e.target.id=="modal"||e.target.closest("[data-close]"))closeModal()};
 document.onkeydown=e=>{if(e.key=="Escape")closeModal()};
 
-function play(url,title){
+function play(url,title,back){
   if(!url)return toast("Not available to watch");
-  openModal(`<h2>${esc(title)}</h2><video src="${esc(url)}" controls autoplay playsinline></video><div class="row"><button class="btn" data-close>Close</button></div>`);
+  const backBtn=back?`<button class="btn" data-back>Back to episodes</button>`:"";
+  openModal(`<h2>${esc(title)}</h2><video src="${esc(url)}" controls autoplay playsinline></video><div class="row">${backBtn}<button class="btn" data-close>Close</button></div>`);
+  if(back)$("#dialog").onclick=ev=>{if(ev.target.closest("[data-back]"))back()};
 }
+const epLabel=(it,e)=>`${it.title} - Season ${e.season||1} ${e.title}`;
 function download(url,title){
   if(!url)return toast("Download not available");
   const a=document.createElement("a");a.href=url;a.download=title;a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();a.remove();
@@ -126,13 +129,13 @@ function episodes(it,season){
     const sb=ev.target.closest("[data-s]");if(sb)return episodes(it,+sb.dataset.s);
     const b=ev.target.closest("[data-e]");if(!b)return;
     const n=+b.dataset.e.slice(1),e=it.episodes[n],k=b.dataset.e[0];
-    if(k=="w")play(e.watch,it.title+" - "+e.title);else if(k=="d")download(e.download,e.title);else share(it.id,n)};
+    if(k=="w")play(e.watch,epLabel(it,e),()=>episodes(it,e.season||1));else if(k=="d")download(e.download,epLabel(it,e));else share(it.id,n)};
 }
 function openFromHash(){
   const [id,ep]=decodeURIComponent(location.hash.slice(1)).split("/");
   const it=items.find(x=>x.id==id);if(!it)return;
   if(it.type=="movie")play(it.watch,it.title);
-  else if(ep!=null&&it.episodes?.[ep]?.watch)play(it.episodes[ep].watch,it.title+" - "+it.episodes[ep].title);
+  else if(ep!=null&&it.episodes?.[ep]?.watch){const e=it.episodes[ep];play(e.watch,epLabel(it,e),()=>episodes(it,e.season||1))}
   else episodes(it);
 }
 addEventListener("hashchange",()=>items.length&&openFromHash());
