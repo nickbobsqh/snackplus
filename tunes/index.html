@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SNACK+ Tunes</title>
+<link rel="icon" href="icon.ico">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bg"></div>
+
+<div id="welcome" class="modal">
+  <div class="glass card">
+    <img src="logo.png" alt="SNACK+" class="wlogo">
+    <h1>SNACK+ Tunes</h1>
+    <p>Choose your music folder to get started.<br>Your files stay on your device and are never uploaded.</p>
+    <button id="pick" class="btn primary">Choose music folder</button>
+    <input type="file" id="fallback" webkitdirectory multiple hidden>
+    <p id="status" class="muted"></p>
+  </div>
+</div>
+
+<div id="nameModal" class="modal hide">
+  <div class="glass card">
+    <h3 id="nmTitle">Name</h3>
+    <input id="nmInput" class="field" maxlength="60" autocomplete="off">
+    <div class="ctrls">
+      <button id="nmCancel" class="btn">Cancel</button>
+      <button id="nmOk" class="btn primary">OK</button>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+  <header class="glass brand">
+    <img src="logo.png" alt="SNACK+">
+    <span>Tunes</span>
+  </header>
+  <div class="glass topbar">
+    <h2 id="title">Songs</h2>
+    <div class="search">
+      <input id="q" type="search" placeholder="Search…" autocomplete="off">
+      <button id="searchBtn" class="icon" title="Search" aria-label="Search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      </button>
+    </div>
+    <select id="sort" class="sel" title="Sort">
+      <option value="az">Name A–Z</option>
+      <option value="za">Name Z–A</option>
+      <option value="artist">Artist</option>
+      <option value="album">Album</option>
+      <option value="albumorder">Album order (track #)</option>
+      <option value="genre">Genre</option>
+      <option value="count">Most songs</option>
+    </select>
+    <button id="changeFolder" class="btn small">Change folder</button>
+  </div>
+
+  <nav class="glass side" id="nav">
+    <button data-v="songs" class="on">Songs</button>
+    <button data-v="artists">Artists</button>
+    <button data-v="albums">Albums</button>
+    <button data-v="genres">Genres</button>
+    <button data-v="playlists">Playlists</button>
+    <button data-v="other">Other services</button>
+  </nav>
+
+  <main class="glass main" id="main"></main>
+
+  <footer class="glass player">
+    <div class="np">
+      <div class="cover" id="cover"><svg class="ic" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+      <div class="meta"><b id="pTitle">Nothing playing</b><small id="pArtist">—</small></div>
+    </div>
+    <div class="center">
+      <div class="ctrls">
+        <button id="shuffle" class="icon" title="Shuffle"><svg class="ic" viewBox="0 0 24 24"><path d="M3 6h4l10 12h4"/><path d="M3 18h4l3-4"/><path d="M14 10l3-4h4"/><path d="M17 3l4 3-4 3"/><path d="M17 15l4 3-4 3"/></svg></button>
+        <button id="prev" class="icon" title="Previous"><svg class="ic" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M6 5h2v14H6zM19 5L9 12l10 7z"/></svg></button>
+        <button id="play" class="icon big" title="Play/Pause"><svg class="ic" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M7 4l13 8-13 8z"/></svg></button>
+        <button id="next" class="icon" title="Next"><svg class="ic" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M16 5h2v14h-2zM5 5l10 7-10 7z"/></svg></button>
+        <button id="repeat" class="icon" title="Repeat"><svg class="ic" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></svg></button>
+      </div>
+      <div class="seek"><span id="cur">0:00</span><input type="range" id="seek" min="0" max="1000" value="0"><span id="dur">0:00</span></div>
+    </div>
+    <div class="vol"><input type="range" id="vol" min="0" max="100" value="80"><span><svg class="ic" viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg></span></div>
+  </footer>
+</div>
+<audio id="audio"></audio>
+<script src="app.js"></script>
+</body>
+</html>
