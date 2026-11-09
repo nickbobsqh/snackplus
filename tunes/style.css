@@ -82,3 +82,29 @@ input[type=range]::-moz-range-progress{background:var(--accent2);height:6px;bord
 .vol .ic{width:20px;height:20px}
 .tile .th .ic{width:40%;height:40%;opacity:.8}
 .btn.hide{display:none}
+
+/* ---- phones ---- */
+@media(max-width:640px){
+  .app{height:100vh;height:100dvh;gap:8px;padding:8px;grid-template-columns:1fr;grid-template-rows:auto auto 1fr auto auto;grid-template-areas:"brand" "top" "main" "player" "side"}
+  .brand{padding:2px;flex-direction:row}
+  .brand img{height:34px}.brand{font-size:15px}
+  .topbar{flex-wrap:wrap;gap:8px;padding:10px 12px}
+  .topbar h2{flex:1 1 60%;font-size:18px}
+  .search{flex:1 1 100%;order:3}
+  .search input{width:100%;min-width:0;flex:1}
+  .sel{padding:7px 10px;font-size:13px}
+  .topbar .btn.small{padding:7px 12px;font-size:13px}
+  .side{flex-direction:row;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;padding:4px}
+  .side button{flex:none;min-height:40px;padding:0 14px;font-size:14px;border:0;border-radius:20px;text-align:center}
+  .side button.on{box-shadow:none}
+  .main{padding:12px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+  .player{grid-template-columns:1fr;gap:6px;padding:8px 10px}
+  .np .cover{width:44px;height:44px;flex:none}
+  .vol{display:none}
+  .center{gap:4px}
+  .ctrls{gap:14px}
+  .ctrls .icon{width:40px;height:40px}
+  .ctrls .icon.big{width:52px;height:52px}
+  .modal .card{width:92vw;padding:20px}
+}
