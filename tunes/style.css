@@ -81,3 +81,4 @@ input[type=range]::-moz-range-progress{background:var(--accent2);height:6px;bord
 .cover .ic{width:40%;height:40%;opacity:.8}
 .vol .ic{width:20px;height:20px}
 .tile .th .ic{width:40%;height:40%;opacity:.8}
+.btn.hide{display:none}

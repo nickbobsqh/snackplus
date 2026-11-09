@@ -31,16 +31,36 @@ async function* walk(dir,path=''){
     else if(EXT.test(h.name))yield{file:await h.getFile(),path:path+h.name};
   }
 }
+// ---- remember the chosen folder (IndexedDB stores the directory handle) ----
+const dbp=new Promise((res,rej)=>{const r=indexedDB.open('snackTunes',1);
+  r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+async function kvGet(k){const db=await dbp;return new Promise(res=>{const r=db.transaction('kv').objectStore('kv').get(k);r.onsuccess=()=>res(r.result);r.onerror=()=>res(undefined)})}
+async function kvSet(k,v){const db=await dbp;return new Promise(res=>{const tx=db.transaction('kv','readwrite');tx.objectStore('kv').put(v,k);tx.oncomplete=res})}
+async function scanDir(d){
+  await kvSet('folder',d).catch(()=>{});
+  const f=[];$('#status').textContent='Scanning…';
+  try{for await(const x of walk(d))f.push(x);load(f)}
+  catch(e){$('#status').textContent=e.message}
+}
 $('#pick').onclick=async()=>{
   if(window.showDirectoryPicker){
-    try{const d=await showDirectoryPicker({mode:'read'});const f=[];
-      $('#status').textContent='Scanning…';
-      for await(const x of walk(d))f.push(x);
-      load(f);}catch(e){if(e.name!=='AbortError')$('#status').textContent=e.message}
+    try{scanDir(await showDirectoryPicker({mode:'read'}))}
+    catch(e){if(e.name!=='AbortError')$('#status').textContent=e.message}
   }else $('#fallback').click();
 };
+// On startup: reopen the saved folder automatically if permission is still granted,
+// otherwise offer a one-click "Continue" button (browsers need a click to re-grant access).
+(async()=>{
+  if(!window.showDirectoryPicker)return;
+  const d=await kvGet('folder').catch(()=>null);
+  if(!d)return;
+  if(await d.queryPermission({mode:'read'})==='granted')return scanDir(d);
+  const b=$('#resume');b.textContent=`Open “${d.name}”`;b.classList.remove('hide');
+  b.onclick=async()=>{if(await d.requestPermission({mode:'read'})==='granted')scanDir(d)};
+})();
 $('#fallback').onchange=e=>load([...e.target.files].filter(f=>EXT.test(f.name)).map(f=>({file:f,path:f.webkitRelativePath||f.name})));
 $('#changeFolder').onclick=()=>{audio.pause();$('#welcome').classList.remove('hide')};
+
 
 async function load(files){
   $('#status').textContent=`Reading ${files.length} files…`;
