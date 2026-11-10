@@ -8,12 +8,29 @@ let profile=store.get("snack_profile",{name:"",pic:""}),settings=store.get("snac
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)}
 
+// Normalize a movie/episode object so watch/download are always quality maps.
+// Accepts old plain-string format and new {480p,720p,1080p} map.
+function normalizeLinks(obj){
+  const toMap=v=>{
+    if(!v)return{};
+    if(typeof v==="string")return v?{"720p":v}:{};
+    return v;
+  };
+  obj.watch=toMap(obj.watch);
+  obj.download=toMap(obj.download);
+  return obj;
+}
+
 async function init(){
   document.body.classList.toggle("lite",!!settings.lite);
   renderTabs();renderProfile();
   try{
     const r=await fetch("movies.txt",{cache:"no-store"});
     items=JSON.parse(await r.text());
+    items.forEach(it=>{
+      if(it.type==="movie")normalizeLinks(it);
+      else(it.episodes||[]).forEach(e=>normalizeLinks(e));
+    });
   }catch(e){items=[];toast("Could not load movies.txt")}
   render();
   openFromHash();
@@ -92,34 +109,20 @@ function addGroup(){
   groups=[...groups,name];store.set("snack_groups",groups);render();
 }
 
-// Build a quality-sources object from an item or episode using the new schema fields
-function watchSources(o){
-  const s={};
-  if(o.watch480)s["480p"]=o.watch480;
-  if(o.watch720)s["720p"]=o.watch720;
-  if(o.watch1080)s["1080p"]=o.watch1080;
-  // legacy fallback: single watch field
-  if(!Object.keys(s).length&&o.watch)s["Watch"]=o.watch;
-  return s;
-}
-function downloadSources(o){
-  const s={};
-  if(o.download480)s["480p"]=o.download480;
-  if(o.download720)s["720p"]=o.download720;
-  if(o.download1080)s["1080p"]=o.download1080;
-  // legacy fallback
-  if(!Object.keys(s).length&&o.download)s["Download"]=o.download;
-  return s;
-}
-function hasWatch(o){return Object.keys(watchSources(o)).length>0}
-function hasDownload(o){return Object.keys(downloadSources(o)).length>0}
+// Returns available quality keys from a map, sorted preferred order
+const QUALITIES=["480p","720p","1080p"];
+function availableQ(map){return QUALITIES.filter(q=>map&&map[q])}
 
 function card(i){
   const isSaved=saved.includes(i.id),m=i.type=="movie";
+  const watchMap=m?(i.watch||{}):{};
+  const dlMap=m?(i.download||{}):{};
+  const hasWatch=m?availableQ(watchMap).length>0:false;
+  const hasDl=m?availableQ(dlMap).length>0:false;
   const b=[m?"Movie":"Show",i.subbed&&"Subbed",i.dubbed&&"Dubbed"].filter(Boolean).map(x=>`<span class="badge">${x}</span>`).join("")+(i.exclusive?`<span class="badge ex">Dubbed by SNACK</span>`:"");
   const btns=m
-    ?`<button class="btn pri" data-a="watch" ${hasWatch(i)?"":"disabled"}>Watch</button><button class="btn" data-a="dl" ${hasDownload(i)?"":"disabled"}>Download</button><button class="btn" data-a="share">Share</button>`
-    :`<button class="btn pri" data-a="eps">Episodes</button>`;
+    ?`<button class="btn pri" data-a="watch" ${hasWatch?"":"disabled"}>Watch</button><button class="btn" data-a="dl" ${hasDl?"":"disabled"}>Download</button><button class="btn" data-a="share">Share</button>`
+    :`<button class="btn pri" data-a="eps">Episodes</button><button class="btn" data-a="share">Share</button>`;
   const grp=tab==5&&!$("#search").value.trim()&&groups.length?`<select class="grp" data-a="grp" title="Group"><option value="">Ungrouped</option>${groups.map(n=>`<option ${groupOf[i.id]==n?"selected":""}>${esc(n)}</option>`).join("")}</select>`:"";
   return `<article class="card glass" data-id="${esc(i.id)}">
    <div class="cover"><span>${esc(i.title)}</span><img src="${esc(i.cover)}" alt="" onerror="this.remove()">
@@ -138,8 +141,8 @@ $("#grid").onclick=e=>{
   const it=items.find(x=>x.id==b.closest(".card").dataset.id);if(!it)return;
   const a=b.dataset.a;
   if(a=="save"){saved=saved.includes(it.id)?saved.filter(x=>x!=it.id):[...saved,it.id];store.set("snack_saved",saved);render()}
-  else if(a=="watch")pickQuality(watchSources(it),it.title,(url)=>play(url,it.title));
-  else if(a=="dl")pickQuality(downloadSources(it),it.title,(url)=>download(url,it.title));
+  else if(a=="watch")pickQuality(it.watch,it.title,"watch");
+  else if(a=="dl")pickQuality(it.download,it.title,"download");
   else if(a=="share")share(it.id);
   else if(a=="eps")episodes(it);
 };
@@ -156,14 +159,26 @@ function closeModal(){$("#modal").classList.add("hidden");$("#dialog").innerHTML
 $("#modal").onclick=e=>{if(e.target.id=="modal"||e.target.closest("[data-close]"))closeModal()};
 document.onkeydown=e=>{if(e.key=="Escape")closeModal()};
 
-// Quality picker: if only one option, skip the picker and call cb directly
-function pickQuality(sources,title,cb){
-  const keys=Object.keys(sources);
-  if(!keys.length)return toast("Not available");
-  if(keys.length==1)return cb(sources[keys[0]]);
-  const btns=keys.map(k=>`<button class="btn pri" data-q="${esc(k)}">${esc(k)}</button>`).join("");
-  openModal(`<h2>${esc(title)}</h2><p style="opacity:.7;margin-bottom:12px">Select quality</p><div class="row" style="flex-wrap:wrap;gap:10px">${btns}</div><div class="row" style="margin-top:12px"><button class="btn" data-close>Cancel</button></div>`);
-  $("#dialog").onclick=ev=>{const b=ev.target.closest("[data-q]");if(b){closeModal();cb(sources[b.dataset.q])}};
+// Quality picker modal — mode: "watch" | "download"
+function pickQuality(map,title,mode){
+  const qs=availableQ(map);
+  if(!qs.length)return toast(mode==="watch"?"Not available to watch":"Download not available");
+  if(qs.length===1){
+    if(mode==="watch")play(map[qs[0]],title);
+    else download(map[qs[0]],title);
+    return;
+  }
+  const btns=qs.map(q=>`<button class="btn pri" data-q="${q}">${q}</button>`).join("");
+  openModal(`<h2>${esc(title)}</h2><p style="opacity:.7;margin-bottom:12px">${mode==="watch"?"Select quality to watch:":"Select quality to download:"}</p>
+    <div class="row">${btns}</div>
+    <div class="row"><button class="btn" data-close>Cancel</button></div>`);
+  $("#dialog").onclick=ev=>{
+    const qb=ev.target.closest("[data-q]");if(!qb)return;
+    const url=map[qb.dataset.q];
+    closeModal();
+    if(mode==="watch")play(url,title);
+    else download(url,title);
+  };
 }
 
 function play(url,title,back){
@@ -181,6 +196,7 @@ async function share(id,ep){
   const url=location.origin+location.pathname+"#"+id+(ep!=null?"/"+ep:"");
   try{await navigator.clipboard.writeText(url);toast("Link copied")}catch{prompt("Copy this link:",url)}
 }
+
 function episodes(it,season){
   const eps=it.episodes||[];
   const seasons=[...new Set(eps.map(e=>e.season||1))].sort((a,b)=>a-b);
@@ -189,5 +205,88 @@ function episodes(it,season){
       return `<button class="btn season" data-s="${s}">Season ${s} - <span>${n} episode${n==1?"":"s"}</span></button>`}).join("");
     openModal(`<h2>${esc(it.title)} - Seasons</h2>${rows||"<p>No episodes yet.</p>"}<div class="row"><button class="btn" data-close>Close</button></div>`);
   }else{
-    const rows=eps.map((e,n)=>[e,n]).filter(([e])=>(e.season||1)==season).map(([e,n])=>`<div class="ep"><span>${esc(e.title)}</span><div class="btns">
-   <button class="btn pri" data-e="w${n}" ${
+    // Episodes: Watch + Share only (no Download button)
+    const rows=eps.map((e,n)=>[e,n]).filter(([e])=>(e.season||1)==season).map(([e,n])=>{
+      const watchMap=e.watch||{};
+      const hasWatch=availableQ(watchMap).length>0;
+      return `<div class="ep"><span>${esc(e.title)}</span><div class="btns">
+        <button class="btn pri" data-e="w${n}" ${hasWatch?"":"disabled"}>Watch</button>
+        <button class="btn" data-e="s${n}">Share</button></div></div>`;
+    }).join("");
+    openModal(`<h2>${esc(it.title)} - Season ${season}</h2>${rows||"<p>No episodes in this season.</p>"}<div class="row"><button class="btn" data-back>Back to seasons</button><button class="btn" data-close>Close</button></div>`);
+  }
+  $("#dialog").onclick=ev=>{
+    if(ev.target.closest("[data-back]"))return episodes(it);
+    const sb=ev.target.closest("[data-s]");if(sb)return episodes(it,+sb.dataset.s);
+    const b=ev.target.closest("[data-e]");if(!b)return;
+    const n=+b.dataset.e.slice(1),e=it.episodes[n],k=b.dataset.e[0];
+    const watchMap=e.watch||{};
+    const qs=availableQ(watchMap);
+    if(k==="w"){
+      if(qs.length===1)play(watchMap[qs[0]],epLabel(it,e),()=>episodes(it,e.season||1));
+      else if(qs.length>1)pickQualityEp(watchMap,epLabel(it,e),it,e);
+    }else if(k==="s")share(it.id,n);
+  };
+}
+
+// Quality picker for episode watch (restores episode list on back)
+function pickQualityEp(map,label,it,ep){
+  const qs=availableQ(map);
+  const btns=qs.map(q=>`<button class="btn pri" data-q="${q}">${q}</button>`).join("");
+  openModal(`<h2>${esc(label)}</h2><p style="opacity:.7;margin-bottom:12px">Select quality to watch:</p>
+    <div class="row">${btns}</div>
+    <div class="row"><button class="btn" data-back>Back</button><button class="btn" data-close>Cancel</button></div>`);
+  $("#dialog").onclick=ev=>{
+    if(ev.target.closest("[data-back]"))return episodes(it,ep.season||1);
+    const qb=ev.target.closest("[data-q]");if(!qb)return;
+    play(map[qb.dataset.q],label,()=>episodes(it,ep.season||1));
+  };
+}
+
+function openFromHash(){
+  const [id,ep]=decodeURIComponent(location.hash.slice(1)).split("/");
+  const it=items.find(x=>x.id==id);if(!it)return;
+  if(it.type=="movie"){
+    const qs=availableQ(it.watch||{});
+    if(qs.length===1)play(it.watch[qs[0]],it.title);
+    else pickQuality(it.watch,it.title,"watch");
+  }else if(ep!=null&&it.episodes?.[ep]){
+    const e=it.episodes[ep];const watchMap=e.watch||{};
+    const qs=availableQ(watchMap);
+    if(qs.length===1)play(watchMap[qs[0]],epLabel(it,e),()=>episodes(it,e.season||1));
+    else episodes(it,e.season||1);
+  }else episodes(it);
+}
+addEventListener("hashchange",()=>items.length&&openFromHash());
+
+function exportSaved(){
+  const blob=new Blob([JSON.stringify({snack_saved:saved})],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="snack-saved.json";a.click();
+}
+function importSaved(){
+  const f=document.createElement("input");f.type="file";f.accept=".json";
+  f.onchange=()=>f.files[0].text().then(t=>{
+    try{const d=JSON.parse(t);if(Array.isArray(d.snack_saved)){saved=d.snack_saved;store.set("snack_saved",saved);render();toast("Imported");}else toast("Invalid file");}catch{toast("Invalid file");}
+  });f.click();
+}
+
+// Profile modal
+$("#profileBtn").onclick=()=>{
+  openModal(`<h2>Profile</h2>
+    <div class="row"><img class="bigav" id="bigav" src="${esc(profile.pic)}" onerror="this.style.visibility='hidden'" onload="this.style.visibility='visible'"></div>
+    <div class="row"><label style="flex:1;font-size:13px">Name<input class="field" id="pname" value="${esc(profile.name)}" placeholder="Your name" style="width:100%;margin-top:4px"></label></div>
+    <div class="row"><label style="flex:1;font-size:13px">Avatar URL<input class="field" id="ppic" value="${esc(profile.pic)}" placeholder="https://..." style="width:100%;margin-top:4px"></label></div>
+    <div class="row"><button class="btn pri" id="psave">Save</button><button class="btn" data-close>Cancel</button></div>`);
+  $("#ppic").oninput=e=>{$("#bigav").src=e.target.value;$("#bigav").style.visibility="visible"};
+  $("#psave").onclick=()=>{profile={name:$("#pname").value,pic:$("#ppic").value};store.set("snack_profile",profile);renderProfile();closeModal();toast("Profile saved")};
+};
+
+// Settings modal
+$("#settingsBtn").onclick=()=>{
+  openModal(`<h2>Settings</h2>
+    <div class="row"><label style="display:flex;align-items:center;gap:10px"><input type="checkbox" id="slite" ${settings.lite?"checked":""}> Lite mode (no glass blur)</label></div>
+    <div class="row"><button class="btn pri" id="ssave">Save</button><button class="btn" data-close>Cancel</button></div>`);
+  $("#ssave").onclick=()=>{settings.lite=$("#slite").checked;store.set("snack_settings",settings);document.body.classList.toggle("lite",!!settings.lite);closeModal();toast("Settings saved")};
+};
+
+init();

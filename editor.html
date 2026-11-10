@@ -22,7 +22,9 @@ body{overflow:auto}
 .f .field{width:100%;font-family:inherit}
 .chk{display:flex;gap:16px;flex-wrap:wrap;grid-column:1/-1}
 .chk label{flex-direction:row;align-items:center;gap:6px;font-size:14px}
-.epr{display:grid;grid-template-columns:.6fr 1.2fr 3fr auto auto auto;gap:6px;margin-bottom:6px}
+.sec-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;opacity:.55;padding-top:4px}
+.epr{display:grid;grid-template-columns:.5fr 1fr repeat(3,1.4fr) repeat(3,1.4fr) auto auto auto auto;gap:5px;margin-bottom:6px;align-items:center}
+.epr-sep{font-size:11px;opacity:.5;text-align:center}
 .preview{width:90px;aspect-ratio:2/3;object-fit:cover;border-radius:10px;background:#3b0f6b}
 .danger{background:#7a1a1a}
 @media(max-width:800px){.ed{grid-template-columns:1fr}.list{position:static;max-height:240px}.f{grid-template-columns:1fr}.epr{grid-template-columns:1fr}}
@@ -43,4 +45,3 @@ body{overflow:auto}
 <div id="toast" class="toast"></div>
 <script src="editor.js"></script>
 </body>
-</html>
