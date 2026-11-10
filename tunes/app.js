@@ -48,6 +48,8 @@ $('#pick').onclick=async()=>{
     catch(e){if(e.name!=='AbortError')$('#status').textContent=e.message}
   }else $('#fallback').click();
 };
+$('#promoClose').onclick=()=>$('#promo').classList.add('hide');
+
 // On startup: reopen the saved folder automatically if permission is still granted,
 // otherwise offer a one-click "Continue" button (browsers need a click to re-grant access).
 (async()=>{
