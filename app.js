@@ -8,6 +8,17 @@ let profile=store.get("snack_profile",{name:"",pic:""}),settings=store.get("snac
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)}
 
+// Normalize a watch value: accepts plain string or {480p,720p,1080p} object
+// Returns {urls:{}, best:""} where urls is the quality map and best is highest available
+function normalizeWatch(w){
+  if(!w)return null;
+  if(typeof w==="string"){const q=w?{"1080p":w,"720p":w,"480p":w}:{};return w?{urls:q,best:w}:null}
+  const order=["1080p","720p","480p"];
+  const urls={};order.forEach(q=>{if(w[q])urls[q]=w[q]});
+  const best=order.find(q=>urls[q])||"";
+  return best?{urls,best}:null;
+}
+
 async function init(){
   document.body.classList.toggle("lite",!!settings.lite);
   renderTabs();renderProfile();
@@ -93,8 +104,10 @@ function addGroup(){
 }
 function card(i){
   const isSaved=saved.includes(i.id),m=i.type=="movie";
+  const watchData=normalizeWatch(i.watch);
+  const hasWatch=!!watchData;
   const b=[m?"Movie":"Show",i.subbed&&"Subbed",i.dubbed&&"Dubbed"].filter(Boolean).map(x=>`<span class="badge">${x}</span>`).join("")+(i.exclusive?`<span class="badge ex">Dubbed by SNACK</span>`:"");
-  const btns=m?`<button class="btn pri" data-a="watch" ${i.watch?"":"disabled"}>Watch</button><button class="btn" data-a="dl" ${i.download?"":"disabled"}>Download</button><button class="btn" data-a="share">Share</button>`
+  const btns=m?`<button class="btn pri" data-a="watch" ${hasWatch?"":"disabled"}>Watch</button><button class="btn" data-a="dl" ${i.download?"":"disabled"}>Download</button><button class="btn" data-a="share">Share</button>`
    :`<button class="btn pri" data-a="eps">Episodes</button>`;
   const grp=tab==5&&!$("#search").value.trim()&&groups.length?`<select class="grp" data-a="grp" title="Group"><option value="">Ungrouped</option>${groups.map(n=>`<option ${groupOf[i.id]==n?"selected":""}>${esc(n)}</option>`).join("")}</select>`:"";
   return `<article class="card glass" data-id="${esc(i.id)}">
@@ -132,12 +145,38 @@ function closeModal(){$("#modal").classList.add("hidden");$("#dialog").innerHTML
 $("#modal").onclick=e=>{if(e.target.id=="modal"||e.target.closest("[data-close]"))closeModal()};
 document.onkeydown=e=>{if(e.key=="Escape")closeModal()};
 
-function play(url,title,back){
-  if(!url)return toast("Not available to watch");
+// play() accepts a watch value (string or quality object) + title + optional back callback
+function play(watchVal,title,back){
+  const nw=normalizeWatch(watchVal);
+  if(!nw)return toast("Not available to watch");
+
+  const qualities=Object.keys(nw.urls);
+  const hasMultiple=qualities.length>1;
+
+  // Build quality selector only when multiple distinct URLs exist
+  const qSelect=hasMultiple
+    ?`<select id="qualSel" class="field" style="width:auto;min-width:90px">${qualities.map(q=>`<option value="${q}">${q}</option>`).join("")}</select>`
+    :"";
+
   const backBtn=back?`<button class="btn" data-back>Back to episodes</button>`:"";
-  openModal(`<h2>${esc(title)}</h2><video src="${esc(url)}" controls autoplay playsinline></video><div class="row">${backBtn}<button class="btn" data-close>Close</button></div>`);
+
+  openModal(`<h2>${esc(title)}</h2>
+    <video id="mainVid" src="${esc(nw.best)}" controls autoplay playsinline></video>
+    <div class="row" style="gap:10px;align-items:center">
+      ${qSelect}
+      ${backBtn}
+      <button class="btn" data-close>Close</button>
+    </div>`);
+
+  if(hasMultiple){
+    const sel=$("#qualSel"),vid=$("#mainVid");
+    sel.value=qualities[0]; // default to highest
+    sel.onchange=()=>{const t=vid.currentTime,p=!vid.paused;vid.src=nw.urls[sel.value];vid.oncanplay=()=>{vid.currentTime=t;if(p)vid.play();vid.oncanplay=null}};
+  }
+
   if(back)$("#dialog").onclick=ev=>{if(ev.target.closest("[data-back]"))back()};
 }
+
 const epLabel=(it,e)=>`${it.title} - Season ${e.season||1} ${e.title}`;
 function download(url,title){
   if(!url)return toast("Download not available");
@@ -155,10 +194,12 @@ function episodes(it,season){
       return `<button class="btn season" data-s="${s}">Season ${s} - <span>${n} episode${n==1?"":"s"}</span></button>`}).join("");
     openModal(`<h2>${esc(it.title)} - Seasons</h2>${rows||"<p>No episodes yet.</p>"}<div class="row"><button class="btn" data-close>Close</button></div>`);
   }else{
-    const rows=eps.map((e,n)=>[e,n]).filter(([e])=>(e.season||1)==season).map(([e,n])=>`<div class="ep"><span>${esc(e.title)}</span><div class="btns">
-   <button class="btn pri" data-e="w${n}" ${e.watch?"":"disabled"}>Watch</button>
+    const rows=eps.map((e,n)=>[e,n]).filter(([e])=>(e.season||1)==season).map(([e,n])=>{
+      const hasWatch=!!normalizeWatch(e.watch);
+      return `<div class="ep"><span>${esc(e.title)}</span><div class="btns">
+   <button class="btn pri" data-e="w${n}" ${hasWatch?"":"disabled"}>Watch</button>
    <button class="btn" data-e="d${n}" ${e.download?"":"disabled"}>Download</button>
-   <button class="btn" data-e="s${n}">Share</button></div></div>`).join("");
+   <button class="btn" data-e="s${n}">Share</button></div></div>`}).join("");
     openModal(`<h2>${esc(it.title)} - Season ${season}</h2>${rows||"<p>No episodes in this season.</p>"}<div class="row"><button class="btn" data-back>Back to seasons</button><button class="btn" data-close>Close</button></div>`);
   }
   $("#dialog").onclick=ev=>{
@@ -166,13 +207,19 @@ function episodes(it,season){
     const sb=ev.target.closest("[data-s]");if(sb)return episodes(it,+sb.dataset.s);
     const b=ev.target.closest("[data-e]");if(!b)return;
     const n=+b.dataset.e.slice(1),e=it.episodes[n],k=b.dataset.e[0];
-    if(k=="w")play(e.watch,epLabel(it,e),()=>episodes(it,e.season||1));else if(k=="d")download(e.download,epLabel(it,e));else share(it.id,n)};
+    if(k=="w")play(e.watch,epLabel(it,e),()=>episodes(it,e.season||1));
+    else if(k=="d")download(e.download,epLabel(it,e));
+    else share(it.id,n)};
 }
 function openFromHash(){
   const [id,ep]=decodeURIComponent(location.hash.slice(1)).split("/");
   const it=items.find(x=>x.id==id);if(!it)return;
   if(it.type=="movie")play(it.watch,it.title);
-  else if(ep!=null&&it.episodes?.[ep]?.watch){const e=it.episodes[ep];play(e.watch,epLabel(it,e),()=>episodes(it,e.season||1))}
+  else if(ep!=null&&it.episodes?.[ep]){
+    const e=it.episodes[ep];
+    if(normalizeWatch(e.watch))play(e.watch,epLabel(it,e),()=>episodes(it,e.season||1));
+    else episodes(it);
+  }
   else episodes(it);
 }
 addEventListener("hashchange",()=>items.length&&openFromHash());
