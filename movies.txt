@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "id": "spongebob-squarepants",
+    "type": "show",
+    "title": "SpongeBob SquarePants",
+    "year": "1999-Present",
+    "genre": "Animation",
+    "rating": "TV-Y7",
+    "duration": "17",
+    "description": "The misadventures of a talking sea sponge who works at a fast food restaurant, attends a boating school, and lives in a pineapple under the sea.",
+    "cover": "https://m.media-amazon.com/images/M/MV5BMTY2NGUzMWItYjE3Zi00YWFiLTlmYzYtMjYwZjM3YWMxMDRiXkEyXkFqcGc@._V1_.jpg",
+    "added": "2026-11-10",
+    "subbed": false,
+    "dubbed": false,
+    "exclusive": false,
+    "episodes": [
+      {
+        "title": "5a",
+        "watch": "https://download.esenak.ir/Animation/SpongeBob/Shows/SBSP/SpongeBob.S1E5a.Pizza.Delivery.mp4",
+        "download": "https://download.esenak.ir/Animation/SpongeBob/Shows/SBSP/SpongeBob.S1E5a.Pizza.Delivery.mp4"
+      }
+    ]
+  }
+]
