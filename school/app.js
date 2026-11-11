@@ -5,7 +5,7 @@ const TABS = ['notes', 'schedule', 'homework', 'exams', 'profile'];
 const T = {
   en: {
     appLabel: 'School',
-    notes: 'Notes', notePh: 'Write your notes here…', addImage: '+ Add image', removeImage: 'Remove image', noteImg: 'Note image', imageTooBig: 'Image is too large to save.',
+    notes: 'Notes', notePh: 'Write here…', addImage: 'Image', addText: 'Text', removeImage: 'Remove', noteImg: 'Note image', imageTooBig: 'Image is too large to save.', clearInk: 'Clear drawing', toolSelect: 'Move', toolPen: 'Pen', toolErase: 'Eraser',
     schedule: 'Schedule', homework: 'Homework', exams: 'Exams', profile: 'Profile',
     name: 'Name', school: 'School', grade: 'Grade', years: 'Years', lastLogin: 'Last login', date: 'Date',
     firstVisit: 'First visit', noPhoto: 'No photo', photoAlt: 'Profile photo',
@@ -31,7 +31,7 @@ const T = {
   },
   fa: {
     appLabel: 'مدرسه',
-    notes: 'یادداشت‌ها', notePh: 'یادداشت‌هایتان را اینجا بنویسید…', addImage: '+ افزودن تصویر', removeImage: 'حذف تصویر', noteImg: 'تصویر یادداشت', imageTooBig: 'تصویر برای ذخیره کردن خیلی بزرگ است.',
+    notes: 'یادداشت‌ها', notePh: 'اینجا بنویسید…', addImage: 'تصویر', addText: 'متن', removeImage: 'حذف', noteImg: 'تصویر یادداشت', imageTooBig: 'تصویر برای ذخیره کردن خیلی بزرگ است.', clearInk: 'پاک کردن نقاشی', toolSelect: 'جابه‌جایی', toolPen: 'قلم', toolErase: 'پاک‌کن',
     schedule: 'برنامه', homework: 'تکالیف', exams: 'امتحان‌ها', profile: 'پروفایل',
     name: 'نام', school: 'مدرسه', grade: 'پایه', years: 'سال تحصیلی', lastLogin: 'آخرین ورود', date: 'تاریخ',
     firstVisit: 'اولین بازدید', noPhoto: 'بدون عکس', photoAlt: 'عکس پروفایل',
@@ -59,7 +59,7 @@ const T = {
 
 const def = () => ({
   profile: { name: '', school: '', grade: '', pfp: '', lastLogin: '' },
-  notes: { items: [] }, // {t:'text', v} or {t:'img', src}
+  notes: { items: [], strokes: [] }, // items: {id,t:'text'|'img',x,y,w,h,v|src}; strokes: {c,w,pts:[[x,y],..]} in board px
   schedule: { hours: [], days: [], cells: {} },
   homework: { required: [], optional: [] },
   exams: { exams: [], quizzes: [] },
@@ -74,7 +74,9 @@ function load() {
   } catch (e) { /* corrupt data: start fresh */ }
   if (!TABS.includes(d.ui.tab)) d.ui.tab = 'notes';
   if (!Array.isArray(d.notes.items)) d.notes.items = [];
+  if (!Array.isArray(d.notes.strokes)) d.notes.strokes = [];
   if (d.notes.text) { d.notes.items.unshift({ t: 'text', v: d.notes.text }); delete d.notes.text; }
+  d.notes.items.forEach((it, i) => { it.id ??= 'n' + Date.now().toString(36) + i; it.x ??= 20 + (i % 4) * 30; it.y ??= 20 + i * 30; it.w ??= it.t === 'text' ? 260 : 300; it.h ??= it.t === 'text' ? 120 : 220; });
   if (!['en', 'fa'].includes(d.ui.lang)) d.ui.lang = 'en';
   return d;
 }
@@ -442,39 +444,121 @@ function list(arr, fields, placeholders, addLabel) {
   return wrap;
 }
 
+const BOARD_W = 2000, BOARD_H = 1400;
 function notes() {
-  const items = D.notes.items;
-  const wrap = $('div', { class: 'note-list' });
-  if (!items.length) items.push({ t: 'text', v: '' });
-  const grow = ta => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; };
-  items.forEach((it, i) => {
-    if (it.t === 'text') {
-      const ta = $('textarea', { class: 'notes-text', placeholder: t('notePh'), dir: 'auto', spellcheck: 'true', rows: 3 });
-      ta.value = it.v || '';
-      ta.addEventListener('input', () => { it.v = ta.value; grow(ta); save(); });
-      wrap.append(ta);
-      requestAnimationFrame(() => grow(ta));
-    } else {
-      wrap.append($('figure', { class: 'note-img' },
-        $('img', { src: it.src, alt: t('noteImg') }),
-        btn(t('removeImage'), () => {
-          if (!confirm(t('confirmRemove'))) return;
-          items.splice(i, 1); save(); render();
-        }, 'ghost')));
-    }
-  });
+  const N = D.notes;
+  const board = $('div', { class: 'board' });
+  const canvas = $('canvas', { class: 'board-ink', width: BOARD_W, height: BOARD_H });
+  const ctx = canvas.getContext('2d');
+  const inner = $('div', { class: 'board-inner' }, canvas);
+  board.append(inner);
+  const drawAll = () => {
+    ctx.clearRect(0, 0, BOARD_W, BOARD_H);
+    ctx.lineCap = ctx.lineJoin = 'round';
+    N.strokes.forEach(st => {
+      if (!st.pts.length) return;
+      ctx.strokeStyle = st.c; ctx.lineWidth = st.w;
+      ctx.globalCompositeOperation = st.e ? 'destination-out' : 'source-over';
+      ctx.beginPath(); ctx.moveTo(st.pts[0][0], st.pts[0][1]);
+      st.pts.slice(1).forEach(p => ctx.lineTo(p[0], p[1]));
+      ctx.stroke();
+    });
+    ctx.globalCompositeOperation = 'source-over';
+  };
+  const pos = (e) => { const r = canvas.getBoundingClientRect(); return [(e.clientX - r.left) * BOARD_W / r.width, (e.clientY - r.top) * BOARD_H / r.height]; };
+
+  // tool bar
+  let tool = 'select', color = '#ffb35c', size = 4;
+  const tools = $('div', { class: 'board-tools' });
+  const toolBtn = (id, label) => { const b = btn(label, () => { tool = id; refreshTools(); }, ''); b.dataset.tool = id; return b; };
+  const colorIn = $('input', { type: 'color', value: color, title: 'Color' });
+  colorIn.addEventListener('input', () => { color = colorIn.value; });
+  const sizeIn = $('input', { type: 'range', min: 2, max: 24, value: size, title: 'Size' });
+  sizeIn.addEventListener('input', () => { size = +sizeIn.value; });
+  const refreshTools = () => tools.querySelectorAll('[data-tool]').forEach(b => b.classList.toggle('primary', b.dataset.tool === tool));
+  const addText = btn(t('addText'), () => {
+    const it = { id: 'n' + Date.now().toString(36), t: 'text', x: 60, y: 60, w: 280, h: 120, v: '' };
+    N.items.push(it); save(); render();
+  }, 'ghost');
   const file = $('input', { type: 'file', accept: 'image/*', hidden: '' });
   file.addEventListener('change', () => {
     const f = file.files[0];
-    if (f) resizePhoto(f, data => {
-      items.push({ t: 'img', src: data });
-      if (save()) render(); else { items.pop(); toast(t('imageTooBig')); }
+    if (!f) return;
+    resizePhoto(f, data => {
+      const it = { id: 'n' + Date.now().toString(36), t: 'img', x: 80, y: 80, w: 320, h: 240, src: data };
+      N.items.push(it);
+      if (save()) render(); else { N.items.pop(); toast(t('imageTooBig')); }
     }, 1000);
   });
+  const addImg = btn(t('addImage'), () => file.click(), 'ghost');
+  const clearBtn = btn(t('clearInk'), () => { if (confirm(t('confirmRemove'))) { N.strokes = []; drawAll(); save(); } }, 'ghost');
+  tools.append(toolBtn('select', t('toolSelect')), toolBtn('pen', t('toolPen')), toolBtn('erase', t('toolErase')), colorIn, sizeIn, addText, addImg, clearBtn, file);
+  refreshTools();
+
+  // items
+  const itemEls = new Map();
+  const mountItem = (it) => {
+    const el = $('div', { class: 'board-item ' + it.t });
+    el.style.left = it.x + 'px'; el.style.top = it.y + 'px';
+    el.style.width = it.w + 'px'; el.style.height = it.h + 'px';
+    const grip = $('div', { class: 'board-grip' });
+    const del = $('button', { class: 'board-del', text: '×', title: t('removeImage') });
+    del.addEventListener('click', e => { e.stopPropagation(); N.items = N.items.filter(x => x !== it); el.remove(); save(); });
+    if (it.t === 'text') {
+      const ta = $('textarea', { class: 'board-text', placeholder: t('notePh'), dir: 'auto' });
+      ta.value = it.v || '';
+      ta.addEventListener('input', () => { it.v = ta.value; save(); });
+      ta.addEventListener('pointerdown', e => e.stopPropagation());
+      el.append(ta);
+    } else {
+      el.append($('img', { src: it.src, alt: t('noteImg'), draggable: 'false' }));
+    }
+    const rz = $('div', { class: 'board-resize' });
+    el.append(grip, del, rz);
+    // drag / resize
+    const drag = (handle, mode) => handle.addEventListener('pointerdown', e => {
+      if (tool !== 'select') return;
+      e.preventDefault(); e.stopPropagation();
+      handle.setPointerCapture(e.pointerId);
+      const [sx, sy] = pos(e); const ox = it.x, oy = it.y, ow = it.w, oh = it.h;
+      const move = ev => {
+        const [px, py] = pos(ev); const dx = px - sx, dy = py - sy;
+        if (mode === 'move') { it.x = Math.max(0, ox + dx); it.y = Math.max(0, oy + dy); }
+        else { it.w = Math.max(120, ow + dx); it.h = Math.max(60, oh + dy); }
+        el.style.left = it.x + 'px'; el.style.top = it.y + 'px';
+        el.style.width = it.w + 'px'; el.style.height = it.h + 'px';
+      };
+      const up = () => { handle.removeEventListener('pointermove', move); handle.removeEventListener('pointerup', up); save(); };
+      handle.addEventListener('pointermove', move); handle.addEventListener('pointerup', up);
+    });
+    drag(grip, 'move'); drag(rz, 'resize');
+    el.addEventListener('pointerdown', () => { el.parentNode?.append(el); });
+    itemEls.set(it, el);
+    return el;
+  };
+  N.items.forEach(it => inner.append(mountItem(it)));
+
+  // ink
+  let cur = null;
+  canvas.addEventListener('pointerdown', e => {
+    if (tool === 'select') return;
+    e.preventDefault(); canvas.setPointerCapture(e.pointerId);
+    const erase = tool === 'erase';
+    cur = { c: color, w: erase ? size * 3 : size, e: erase, pts: [pos(e)] };
+    N.strokes.push(cur); drawAll();
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (!cur) return;
+    cur.pts.push(pos(e)); drawAll();
+  });
+  const endInk = () => { if (cur) { cur = null; save(); } };
+  canvas.addEventListener('pointerup', endInk);
+  canvas.addEventListener('pointercancel', endInk);
+  drawAll();
+
+  // mirror inner sizing to board so scrolling works
   return $('section', { class: 'card notes' },
-    $('h2', { text: t('notes') }), wrap,
-    $('div', { class: 'note-actions' }, btn(t('addImage'), () => file.click(), 'ghost')),
-    file);
+    $('h2', { text: t('notes') }), tools, board);
 }
 
 function homework() {
