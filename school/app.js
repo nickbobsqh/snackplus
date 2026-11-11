@@ -605,7 +605,7 @@ function profile() {
   const file = $('input', { type: 'file', accept: 'image/*', hidden: '' });
   file.onchange = () => {
     const f = file.files[0];
-    if (f) resizePhoto(f, data => { p.pfp = data; if (save()) render(); });
+    if (f) resizePhoto(f, data => { p.pfp = data; if (save()) render(); }, 800);
   };
   const grade = $('select', { class: 'select', 'aria-label': t('grade'), on: { change: () => { p.grade = grade.value; save(); renderSide(); } } },
     $('option', { value: '', text: t('selectGrade') }),
