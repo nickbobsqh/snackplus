@@ -71,6 +71,7 @@ html[lang="fa"] body {
     inset 0 -1px 1px rgba(255, 120, 40, .06),
     0 18px 50px rgba(0, 0, 0, .4);
 }
+
 /* Specular sheen across the top edge */
 .panel::before {
   content: "";
@@ -90,7 +91,7 @@ html[lang="fa"] body {
   font-size: 15px;
   font-weight: 600;
 }
-.logo img { height: 58px; }
+.logo img { height: 40px; width: auto; flex: none; }
 
 /* Tabs */
 .tabs { display: flex; overflow: hidden; }
@@ -379,3 +380,17 @@ tr:last-child > * { border-bottom: 0; }
   .scrim.open { display: block; }
   .main { overflow: visible; }
 }
+
+/* Notes */
+.notes { display: flex; flex-direction: column; height: 100%; box-sizing: border-box; }
+.notes-text {
+  flex: 1; width: 100%; min-height: 200px; box-sizing: border-box; resize: none;
+  background: rgba(0, 0, 0, .18); color: inherit; font: inherit; line-height: 1.7;
+  border: 1px solid rgba(255, 255, 255, .12); border-radius: 14px; padding: 14px 16px; outline: none;
+}
+.notes-text:focus { border-color: rgba(255, 122, 26, .6); }
+.note-list { display: flex; flex-direction: column; gap: 12px; }
+.notes-text { overflow: hidden; }
+.note-img { margin: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.note-img img { max-width: 100%; max-height: 520px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, .12); }
+.note-actions { margin-top: 14px; }

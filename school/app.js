@@ -1,10 +1,11 @@
 /* SNACK+ School — app.js */
 const KEY = 'snackSchoolData';
-const TABS = ['schedule', 'homework', 'exams', 'profile'];
+const TABS = ['notes', 'schedule', 'homework', 'exams', 'profile'];
 
 const T = {
   en: {
     appLabel: 'School',
+    notes: 'Notes', notePh: 'Write your notes here…', addImage: '+ Add image', removeImage: 'Remove image', noteImg: 'Note image', imageTooBig: 'Image is too large to save.',
     schedule: 'Schedule', homework: 'Homework', exams: 'Exams', profile: 'Profile',
     name: 'Name', school: 'School', grade: 'Grade', years: 'Years', lastLogin: 'Last login', date: 'Date',
     firstVisit: 'First visit', noPhoto: 'No photo', photoAlt: 'Profile photo',
@@ -30,6 +31,7 @@ const T = {
   },
   fa: {
     appLabel: 'مدرسه',
+    notes: 'یادداشت‌ها', notePh: 'یادداشت‌هایتان را اینجا بنویسید…', addImage: '+ افزودن تصویر', removeImage: 'حذف تصویر', noteImg: 'تصویر یادداشت', imageTooBig: 'تصویر برای ذخیره کردن خیلی بزرگ است.',
     schedule: 'برنامه', homework: 'تکالیف', exams: 'امتحان‌ها', profile: 'پروفایل',
     name: 'نام', school: 'مدرسه', grade: 'پایه', years: 'سال تحصیلی', lastLogin: 'آخرین ورود', date: 'تاریخ',
     firstVisit: 'اولین بازدید', noPhoto: 'بدون عکس', photoAlt: 'عکس پروفایل',
@@ -57,10 +59,11 @@ const T = {
 
 const def = () => ({
   profile: { name: '', school: '', grade: '', pfp: '', lastLogin: '' },
+  notes: { items: [] }, // {t:'text', v} or {t:'img', src}
   schedule: { hours: [], days: [], cells: {} },
   homework: { required: [], optional: [] },
   exams: { exams: [], quizzes: [] },
-  ui: { tab: 'schedule', lang: 'en' },
+  ui: { tab: 'notes', lang: 'en' },
 });
 
 function load() {
@@ -69,7 +72,9 @@ function load() {
     const saved = JSON.parse(localStorage.getItem(KEY)) || {};
     for (const k in d) if (saved[k] && typeof saved[k] === 'object') Object.assign(d[k], saved[k]);
   } catch (e) { /* corrupt data: start fresh */ }
-  if (!TABS.includes(d.ui.tab)) d.ui.tab = 'schedule';
+  if (!TABS.includes(d.ui.tab)) d.ui.tab = 'notes';
+  if (!Array.isArray(d.notes.items)) d.notes.items = [];
+  if (d.notes.text) { d.notes.items.unshift({ t: 'text', v: d.notes.text }); delete d.notes.text; }
   if (!['en', 'fa'].includes(d.ui.lang)) d.ui.lang = 'en';
   return d;
 }
@@ -166,7 +171,7 @@ function render() {
   })));
   renderSide();
   menuBtn.textContent = t('menu');
-  const views = { schedule, homework, exams, profile };
+  const views = { notes, schedule, homework, exams, profile };
   document.getElementById('main').replaceChildren(views[D.ui.tab]());
 }
 
@@ -437,6 +442,41 @@ function list(arr, fields, placeholders, addLabel) {
   return wrap;
 }
 
+function notes() {
+  const items = D.notes.items;
+  const wrap = $('div', { class: 'note-list' });
+  if (!items.length) items.push({ t: 'text', v: '' });
+  const grow = ta => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; };
+  items.forEach((it, i) => {
+    if (it.t === 'text') {
+      const ta = $('textarea', { class: 'notes-text', placeholder: t('notePh'), dir: 'auto', spellcheck: 'true', rows: 3 });
+      ta.value = it.v || '';
+      ta.addEventListener('input', () => { it.v = ta.value; grow(ta); save(); });
+      wrap.append(ta);
+      requestAnimationFrame(() => grow(ta));
+    } else {
+      wrap.append($('figure', { class: 'note-img' },
+        $('img', { src: it.src, alt: t('noteImg') }),
+        btn(t('removeImage'), () => {
+          if (!confirm(t('confirmRemove'))) return;
+          items.splice(i, 1); save(); render();
+        }, 'ghost')));
+    }
+  });
+  const file = $('input', { type: 'file', accept: 'image/*', hidden: '' });
+  file.addEventListener('change', () => {
+    const f = file.files[0];
+    if (f) resizePhoto(f, data => {
+      items.push({ t: 'img', src: data });
+      if (save()) render(); else { items.pop(); toast(t('imageTooBig')); }
+    }, 1000);
+  });
+  return $('section', { class: 'card notes' },
+    $('h2', { text: t('notes') }), wrap,
+    $('div', { class: 'note-actions' }, btn(t('addImage'), () => file.click(), 'ghost')),
+    file);
+}
+
 function homework() {
   const H = D.homework;
   const f = ['title', 'due'], ph = [t('assignment'), t('dueDate')];
@@ -455,11 +495,11 @@ function exams() {
 }
 
 /* ---------- Profile ---------- */
-function resizePhoto(file, done) {
+function resizePhoto(file, done, maxSide = 400) {
   const url = URL.createObjectURL(file);
   const img = new Image();
   img.onload = () => {
-    const s = Math.min(1, 400 / Math.max(img.width, img.height));
+    const s = Math.min(1, maxSide / Math.max(img.width, img.height));
     const c = document.createElement('canvas');
     c.width = Math.round(img.width * s);
     c.height = Math.round(img.height * s);
