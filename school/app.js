@@ -497,13 +497,15 @@ function notes() {
 
   // items
   const itemEls = new Map();
+  let zTop = 1;
   const mountItem = (it) => {
     const el = $('div', { class: 'board-item ' + it.t });
     el.style.left = it.x + 'px'; el.style.top = it.y + 'px';
     el.style.width = it.w + 'px'; el.style.height = it.h + 'px';
     const grip = $('div', { class: 'board-grip' });
     const del = $('button', { class: 'board-del', text: '×', title: t('removeImage') });
-    del.addEventListener('click', e => { e.stopPropagation(); N.items = N.items.filter(x => x !== it); el.remove(); save(); });
+    del.addEventListener('pointerdown', e => e.stopPropagation());
+    del.addEventListener('click', e => { e.stopPropagation(); N.items = N.items.filter(x => x !== it); itemEls.delete(it); el.remove(); save(); });
     if (it.t === 'text') {
       const ta = $('textarea', { class: 'board-text', placeholder: t('notePh'), dir: 'auto' });
       ta.value = it.v || '';
@@ -532,7 +534,7 @@ function notes() {
       handle.addEventListener('pointermove', move); handle.addEventListener('pointerup', up);
     });
     drag(grip, 'move'); drag(rz, 'resize');
-    el.addEventListener('pointerdown', () => { el.parentNode?.append(el); });
+    el.addEventListener('pointerdown', () => { el.style.zIndex = ++zTop; });
     itemEls.set(it, el);
     return el;
   };
