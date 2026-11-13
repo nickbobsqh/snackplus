@@ -2,9 +2,12 @@
 const KEY = 'snackSchoolData';
 const TABS = ['notes', 'schedule', 'homework', 'exams', 'profile'];
 
+const THEMES = ['snack', 'light', 'dark', 'green', 'cream'];
+const tv = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+let penPicked = false, penChoice = ''; // penChoice is set only when the user picks a pen color by hand
 const T = {
   en: {
-    appLabel: 'School',
+    appLabel: 'School', theme: 'Theme', th_snack: 'SNACK+', th_light: 'White and blue', th_dark: 'Black and blue', th_green: 'Green', th_cream: 'Cream',
     notes: 'Notes', notePh: 'Write here…', addImage: 'Image', addText: 'Text', removeImage: 'Remove', noteImg: 'Note image', imageTooBig: 'Image is too large to save.', clearInk: 'Clear drawing', toolSelect: 'Move', toolPen: 'Pen', toolErase: 'Eraser',
     schedule: 'Schedule', homework: 'Homework', exams: 'Exams', profile: 'Profile',
     name: 'Name', school: 'School', grade: 'Grade', years: 'Years', lastLogin: 'Last login', date: 'Date',
@@ -30,7 +33,7 @@ const T = {
     badImage: 'That file is not a supported image.',
   },
   fa: {
-    appLabel: 'مدرسه',
+    appLabel: 'مدرسه', theme: 'پوسته', th_snack: 'SNACK+', th_light: 'سفید و آبی', th_dark: 'سیاه و آبی', th_green: 'سبز', th_cream: 'کرمی',
     notes: 'یادداشت‌ها', notePh: 'اینجا بنویسید…', addImage: 'تصویر', addText: 'متن', removeImage: 'حذف', noteImg: 'تصویر یادداشت', imageTooBig: 'تصویر برای ذخیره کردن خیلی بزرگ است.', clearInk: 'پاک کردن نقاشی', toolSelect: 'جابه‌جایی', toolPen: 'قلم', toolErase: 'پاک‌کن',
     schedule: 'برنامه', homework: 'تکالیف', exams: 'امتحان‌ها', profile: 'پروفایل',
     name: 'نام', school: 'مدرسه', grade: 'پایه', years: 'سال تحصیلی', lastLogin: 'آخرین ورود', date: 'تاریخ',
@@ -63,7 +66,7 @@ const def = () => ({
   schedule: { hours: [], days: [], cells: {} },
   homework: { required: [], optional: [] },
   exams: { exams: [], quizzes: [] },
-  ui: { tab: 'notes', lang: 'en' },
+  ui: { tab: 'notes', lang: 'en', theme: 'snack' },
 });
 
 function load() {
@@ -78,6 +81,8 @@ function load() {
   if (d.notes.text) { d.notes.items.unshift({ t: 'text', v: d.notes.text }); delete d.notes.text; }
   d.notes.items.forEach((it, i) => { it.id ??= 'n' + Date.now().toString(36) + i; it.x ??= 20 + (i % 4) * 30; it.y ??= 20 + i * 30; it.w ??= it.t === 'text' ? 260 : 300; it.h ??= it.t === 'text' ? 120 : 220; });
   if (!['en', 'fa'].includes(d.ui.lang)) d.ui.lang = 'en';
+  if (!THEMES.includes(d.ui.theme)) d.ui.theme = 'snack';
+  document.documentElement.dataset.theme = d.ui.theme;
   return d;
 }
 
@@ -130,9 +135,11 @@ function $(tag, attrs = {}, ...kids) {
     if (k === 'on') for (const ev in attrs.on) el.addEventListener(ev, attrs.on[ev]);
     else if (k === 'text') el.textContent = attrs[k];
     else if (k === 'value') el.value = attrs[k];
+    else if (typeof attrs[k] === 'boolean') { if (attrs[k]) el.setAttribute(k, ''); }
     else el.setAttribute(k, attrs[k]);
   }
   kids.flat().forEach(c => { if (c != null) el.append(c); });
+  if (tag === 'select' && attrs.value != null) el.value = attrs.value;
   return el;
 }
 
@@ -159,10 +166,31 @@ function toast(msg) {
 }
 
 /* ---------- App shell ---------- */
+// Recolor the logo to the current theme: crop to the artwork, paint solid color.
+let logoSrc = null;
+function paintLogo() {
+  const img = document.getElementById('logoImg');
+  if (!img || !window.LOGO_DATA) return;
+  const col = getComputedStyle(document.documentElement).getPropertyValue('--logo').trim() || '#ff6700';
+  const src = new Image();
+  src.onload = () => {
+    const b = { w: src.naturalWidth, h: src.naturalHeight };
+    const cv = document.createElement('canvas');
+    cv.width = b.w; cv.height = b.h;
+    const g = cv.getContext('2d');
+    g.drawImage(src, 0, 0);
+    g.globalCompositeOperation = 'source-in';
+    g.fillStyle = col;
+    g.fillRect(0, 0, b.w, b.h);
+    img.src = cv.toDataURL('image/png');
+  };
+  src.src = window.LOGO_DATA;
+}
 function render() {
   document.documentElement.lang = D.ui.lang;
   document.documentElement.dir = fa() ? 'rtl' : 'ltr';
   document.querySelector('.logo span').textContent = t('appLabel');
+  paintLogo();
 
   const tabs = document.getElementById('tabs');
   tabs.replaceChildren(...TABS.map(id => $('button', {
@@ -191,6 +219,8 @@ function renderSide() {
     info(t('years'), autoYears()),
     info(t('lastLogin'), prevLoginText()),
     info(t('date'), autoDate()),
+    $('select', { class: 'select theme-pick', 'aria-label': t('theme'), on: { change: (e) => { D.ui.theme = e.target.value; document.documentElement.dataset.theme = D.ui.theme; save(); paintLogo(); render(); } } },
+      ...THEMES.map((k) => $('option', { value: k, text: t('th_' + k), selected: D.ui.theme === k }))),
     $('div', { class: 'side-actions' },
       btn(t('exportData'), exportData, 'primary'),
       btn(t('importData'), importData),
@@ -272,30 +302,29 @@ async function exportSchedule() {
   const at = (x) => edge + dirX * x;      // logical x -> canvas x
 
   // Same palette as the site: dark violet base, orange glow, light text, glass panels.
-  g.fillStyle = '#08040f';
+  const tv = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  g.fillStyle = tv('--bg');
   g.fillRect(0, 0, W, H);
-  const glow = (x, y, rx, ry, color) => {
-    g.save(); g.translate(x, y); g.scale(1, ry / rx);
-    const grd = g.createRadialGradient(0, 0, 0, 0, 0, rx);
-    grd.addColorStop(0, color); grd.addColorStop(1, 'rgba(0,0,0,0)');
-    g.fillStyle = grd; g.fillRect(-rx, -rx, rx * 2, rx * 2); g.restore();
-  };
-  glow(W * 0.3, 0, 1100, 1000, 'rgba(96, 40, 170, .8)');
-  glow(W * 0.03, H * 0.55, 800, 900, 'rgba(70, 25, 140, .75)');
-  glow(W * 0.8, H, 1000, 1000, 'rgba(170, 60, 10, .9)');
   g.textBaseline = 'middle';
   g.textAlign = rtl ? 'right' : 'left';
   g.font = font(96, 700);
-  g.fillStyle = '#f1eaf8';
+  g.fillStyle = tv('--text');
   g.fillText(D.profile.school || 'SNACK+ School', at(0), M + 60);
   g.font = font(56);
-  g.fillStyle = 'rgba(241, 234, 248, .6)';
+  g.fillStyle = tv('--muted');
   const sub = [D.profile.name, D.profile.grade ? t('gradeN', num(D.profile.grade)) : '', autoYears()].filter(Boolean).join('  ·  ');
   g.fillText(sub, at(0), M + 160);
   if (logo) {
     const lh = 170, lwid = lh * logo.naturalWidth / logo.naturalHeight;
     const lx = rtl ? M : W - M - lwid;
-    g.drawImage(logo, lx, M + 100 - lh / 2, lwid, lh);
+    const lc = document.createElement('canvas');
+    lc.width = logo.naturalWidth; lc.height = logo.naturalHeight;
+    const lg = lc.getContext('2d');
+    lg.drawImage(logo, 0, 0);
+    lg.globalCompositeOperation = 'source-in';
+    lg.fillStyle = tv('--logo') || '#ff6700';
+    lg.fillRect(0, 0, lc.width, lc.height);
+    g.drawImage(lc, lx, M + 100 - lh / 2, lwid, lh);
   }
 
   // Grid: days as rows (label on the start side), hours as columns.
@@ -307,7 +336,7 @@ async function exportSchedule() {
   const rowY = r => top + hh + r * rh;
   const box = (x, y, w, h, fill) => {
     g.fillStyle = fill; g.fillRect(x, y, w, h);
-    g.strokeStyle = 'rgba(255, 255, 255, .22)'; g.lineWidth = 3; g.strokeRect(x, y, w, h);
+    g.strokeStyle = tv('--line-2'); g.lineWidth = 3; g.strokeRect(x, y, w, h);
   };
   const wrap = (text, maxW) => {
     const lines = []; let line = '';
@@ -318,7 +347,7 @@ async function exportSchedule() {
     if (line) lines.push(line);
     return lines.slice(0, 3);
   };
-  const label = (text, x, y, w, h, px, weight, color = '#f1eaf8') => {
+  const label = (text, x, y, w, h, px, weight, color = tv('--text')) => {
     g.font = font(px, weight); g.fillStyle = color;
     g.textAlign = 'center';
     const lines = wrap(text, w - 40);
@@ -326,7 +355,7 @@ async function exportSchedule() {
     lines.forEach((ln, k) => g.fillText(ln, x + w / 2, start + k * lh));
   };
 
-  const glass = 'rgba(255, 255, 255, .1)', glassStrong = 'rgba(255, 255, 255, .16)';
+  const glass = tv('--panel'), glassStrong = tv('--panel-2');
   box(rtl ? W - M - lw : M, top, lw, hh, glassStrong);
   hours.forEach((h, c) => {
     box(colX(c), top, cw, hh, glassStrong);
@@ -340,7 +369,7 @@ async function exportSchedule() {
       label(cells[r + '|' + c] || '', colX(c), rowY(r), cw, rh, 52, 400);
     });
   });
-  label(t(rtl ? 'cornerLabelRtl' : 'cornerLabel'), rtl ? W - M - lw : M, top, lw, hh, 52, 700, '#ff8a3d');
+  label(t(rtl ? 'cornerLabelRtl' : 'cornerLabel'), rtl ? W - M - lw : M, top, lw, hh, 52, 700, tv('--accent'));
 
   cv.toBlob(blob => {
     if (!blob) { toast('Export failed'); return; }
@@ -468,11 +497,11 @@ function notes() {
   const pos = (e) => { const r = canvas.getBoundingClientRect(); return [(e.clientX - r.left) * BOARD_W / r.width, (e.clientY - r.top) * BOARD_H / r.height]; };
 
   // tool bar
-  let tool = 'select', color = '#ffb35c', size = 4;
+  let tool = 'select', color = penPicked ? penChoice : tv('--logo'), size = 4;
   const tools = $('div', { class: 'board-tools' });
   const toolBtn = (id, label) => { const b = btn(label, () => { tool = id; refreshTools(); }, ''); b.dataset.tool = id; return b; };
   const colorIn = $('input', { type: 'color', value: color, title: 'Color' });
-  colorIn.addEventListener('input', () => { color = colorIn.value; });
+  colorIn.addEventListener('input', () => { color = penChoice = colorIn.value; penPicked = true; });
   const sizeIn = $('input', { type: 'range', min: 2, max: 24, value: size, title: 'Size' });
   sizeIn.addEventListener('input', () => { size = +sizeIn.value; });
   const refreshTools = () => tools.querySelectorAll('[data-tool]').forEach(b => b.classList.toggle('primary', b.dataset.tool === tool));
@@ -590,7 +619,7 @@ function resizePhoto(file, done, maxSide = 400) {
     c.width = Math.round(img.width * s);
     c.height = Math.round(img.height * s);
     const g = c.getContext('2d');
-    g.fillStyle = '#1d1329';
+    g.fillStyle = '#ffffff';
     g.fillRect(0, 0, c.width, c.height);
     g.drawImage(img, 0, 0, c.width, c.height);
     URL.revokeObjectURL(url);
