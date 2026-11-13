@@ -338,31 +338,6 @@ tr:last-child > * { border-bottom: 0; }
 .menu-btn { display: none; margin-inline-start: auto; }
 .scrim { display: none; }
 
-/* Small screens */
-@media (max-width: 700px) {
-  body { overflow: auto; }
-  .app { grid-template-columns: 1fr; grid-template-rows: 56px auto 1fr; height: auto; min-height: 100vh; }
-  .logo { padding-inline: 12px; gap: 10px; }
-  .logo img { height: 52px; }
-  .menu-btn { display: inline-flex; align-items: center; }
-  .tabs button { font-size: 14px; }
-  /* Sidebar becomes a popup over the page */
-  .side {
-    display: none;
-    position: fixed;
-    inset: 12px;
-    z-index: 30;
-    max-width: 360px;
-    max-height: calc(100vh - 24px);
-    margin: auto;
-    height: fit-content;
-  }
-  .side.open { display: flex; }
-  .scrim { position: fixed; inset: 0; z-index: 25; background: #000000; }
-  .scrim.open { display: block; }
-  .main { overflow: visible; }
-}
-
 /* Notes */
 .notes { display: flex; flex-direction: column; height: 100%; box-sizing: border-box; }
 .notes-text {
@@ -433,11 +408,6 @@ td { border-color: var(--line); }
 .photo-empty { border: 0; border-radius: var(--shape-l); background: var(--panel-2); }
 .toast { border: 0; border-radius: var(--shape-full); background: var(--accent); color: var(--on-accent); padding: 12px 22px; }
 
-@media (max-width: 700px) {
-  .side { border-radius: var(--shape-xl); }
-  .tabs button { font-size: 14px; }
-}
-
 /* Round every remaining square-ish element */
 button, input, select, textarea, .ed, .row, .select, .date-pick, .board, .notes-text,
 .photo-empty, .board-item, th, td, .card, .info, .panel, .side, .logo, .tabs, .toast { border-radius: var(--shape-l); }
@@ -460,3 +430,54 @@ table, .table-wrap, .scroll, .tbl { border-radius: var(--shape-l); overflow: hid
 .board::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
 .board::-webkit-scrollbar-track { background: var(--board); }
 .board { scrollbar-color: var(--accent) var(--board); }
+
+/* Mobile layout (phones and narrow windows) */
+@media (max-width: 700px) {
+  html, body { height: auto; }
+  body { overflow-x: hidden; overflow-y: auto; }
+  .app {
+    height: auto; min-height: 100vh; grid-template-columns: 1fr; grid-template-rows: auto auto 1fr;
+    gap: 10px; padding: 10px; padding-top: max(10px, env(safe-area-inset-top));
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+  .logo { padding: 8px 12px; gap: 8px; font-size: 18px; border-bottom-width: 4px; }
+  .logo img { height: 44px; }
+  .menu-btn { display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; padding: 0 12px; font-size: 14px; border-radius: var(--shape-full); }
+
+  /* Tabs scroll sideways instead of squeezing five labels into one row */
+  .tabs { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; justify-content: flex-start; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tabs button { flex: 0 0 auto; min-height: 44px; padding: 10px 16px; font-size: 14px; white-space: nowrap; border-inline-end: 0; }
+
+  /* Sidebar opens as a full-width sheet over the page */
+  .side {
+    display: none; position: fixed; inset: 10px; z-index: 30; max-width: none; height: auto;
+    max-height: calc(100vh - 20px); max-height: calc(100dvh - 20px); overflow-y: auto;
+  }
+  .side.open { display: flex; }
+  .scrim { position: fixed; inset: 0; z-index: 25; background: #000000; }
+  .scrim.open { display: block; }
+
+  .main { overflow: visible; min-width: 0; }
+  .card { padding: 16px; }
+  .card h2 { font-size: 19px; }
+
+  /* Wide content scrolls inside its own box */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .row { flex-wrap: wrap; }
+  .row > * { min-width: 0; }
+
+  /* Touch targets and inputs that do not zoom on iOS */
+  .btn, .icon-btn { min-height: 44px; }
+  .icon-btn { min-width: 44px; }
+  input, select, textarea, .ed, .select, .date-pick, .notes-text { font-size: 16px; max-width: 100%; }
+
+  /* Whiteboard: taller area that scrolls, toolbar wraps */
+  .board { height: 58vh; min-height: 300px; touch-action: pan-x pan-y; }
+  .board-tools { gap: 6px; }
+  .board-tools input[type=range] { width: 120px; }
+  .notes-text { min-height: 160px; }
+
+  .btn.primary, .btn { white-space: normal; }
+  .toast { left: 10px; right: 10px; bottom: max(10px, env(safe-area-inset-bottom)); text-align: center; }
+}
