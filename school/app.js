@@ -186,6 +186,31 @@ function paintLogo() {
   };
   src.src = window.LOGO_DATA;
 }
+let tabInd = null;
+// Slides the accent pill under the selected top tab.
+function placeTabInd(tabs) {
+  const ind = tabs.querySelector('.tab-ind');
+  const on = tabs.querySelector('button.on');
+  if (!ind || !on) return;
+  ind.style.left = on.offsetLeft + 'px';
+  ind.style.width = on.offsetWidth + 'px';
+}
+window.addEventListener('resize', () => placeTabInd(document.getElementById('tabs')));
+
+// Language switch: everything slides in from the side the new direction starts on.
+function switchLang(lang) {
+  D.ui.lang = lang; save(); render();
+  // Switching to Persian moves left to right; switching back moves right to left.
+  const cls = lang === 'fa' ? 'slide-ltr' : 'slide-rtl';
+  ['tabs', 'side', 'main'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove('slide-rtl', 'slide-ltr');
+    void el.offsetWidth;
+    el.classList.add(cls);
+  });
+}
+
 function render() {
   document.documentElement.lang = D.ui.lang;
   document.documentElement.dir = fa() ? 'rtl' : 'ltr';
@@ -199,6 +224,9 @@ function render() {
     'aria-selected': String(id === D.ui.tab),
     on: { click: () => { D.ui.tab = id; save(); render(); } },
   })));
+  if (!tabInd) tabInd = $('span', { class: 'tab-ind' });
+  tabs.append(tabInd);
+  placeTabInd(tabs);
   renderSide();
   menuBtn.textContent = t('menu');
   const views = { notes, schedule, homework, exams, profile };
@@ -225,7 +253,7 @@ function renderSide() {
       btn(t('exportData'), exportData, 'primary'),
       btn(t('importData'), importData),
       btn(t('resetData'), resetData, 'danger'),
-      btn(t('toggleLang'), () => { D.ui.lang = fa() ? 'en' : 'fa'; save(); render(); }, 'lang')),
+      btn(t('toggleLang'), () => switchLang(fa() ? 'en' : 'fa'), 'lang')),
   );
 }
 
@@ -508,7 +536,7 @@ function notes() {
   const addText = btn(t('addText'), () => {
     const it = { id: 'n' + Date.now().toString(36), t: 'text', x: 60, y: 60, w: 280, h: 120, v: '' };
     N.items.push(it); save(); render();
-  }, 'ghost');
+  });
   const file = $('input', { type: 'file', accept: 'image/*', hidden: '' });
   file.addEventListener('change', () => {
     const f = file.files[0];
@@ -519,8 +547,8 @@ function notes() {
       if (save()) render(); else { N.items.pop(); toast(t('imageTooBig')); }
     }, 1000);
   });
-  const addImg = btn(t('addImage'), () => file.click(), 'ghost');
-  const clearBtn = btn(t('clearInk'), () => { if (confirm(t('confirmRemove'))) { N.strokes = []; drawAll(); save(); } }, 'ghost');
+  const addImg = btn(t('addImage'), () => file.click());
+  const clearBtn = btn(t('clearInk'), () => { if (confirm(t('confirmRemove'))) { N.strokes = []; drawAll(); save(); } });
   tools.append(toolBtn('select', t('toolSelect')), toolBtn('pen', t('toolPen')), toolBtn('erase', t('toolErase')), colorIn, sizeIn, addText, addImg, clearBtn, file);
   refreshTools();
 
