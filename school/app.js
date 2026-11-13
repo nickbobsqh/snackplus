@@ -10,7 +10,7 @@ const T = {
     appLabel: 'School', theme: 'Theme', th_snack: 'SNACK+', th_light: 'White and blue', th_dark: 'Black and blue', th_green: 'Green', th_cream: 'Cream',
     notes: 'Notes', notePh: 'Write here…', addImage: 'Image', addText: 'Text', removeImage: 'Remove', noteImg: 'Note image', imageTooBig: 'Image is too large to save.', clearInk: 'Clear drawing', toolSelect: 'Move', toolPen: 'Pen', toolErase: 'Eraser',
     schedule: 'Schedule', homework: 'Homework', exams: 'Exams', profile: 'Profile',
-    name: 'Name', school: 'School', grade: 'Grade', years: 'Years', lastLogin: 'Last login', date: 'Date',
+    name: 'Name', school: 'School', grade: 'Grade', classGroup: 'Class', years: 'Years', lastLogin: 'Last login', date: 'Date',
     firstVisit: 'First visit', noPhoto: 'No photo', photoAlt: 'Profile photo',
     exportData: 'Export data', importData: 'Import data', resetData: 'Reset data', toggleLang: 'فارسی',
     cornerLabel: 'Day / Period', cornerLabelRtl: 'Period / Day', hourPh: 'Hour', dayPh: 'Day', cellPh: '—',
@@ -19,12 +19,13 @@ const T = {
     exportSchedule: 'Export schedule (A4)', scheduleEmpty: 'Nothing to export yet', scheduleExported: 'Schedule image saved',
     remove: 'Remove', nothing: 'Nothing here yet.',
     required: 'Required', optional: 'Optional', addRequired: '+ Add required', addOptional: '+ Add optional',
+    search: 'Search', done: 'Done', daysLeft: n => n === 0 ? 'Today' : n + ' days', overdue: 'Overdue', noMatch: 'No matches.',
     assignment: 'Assignment title', dueDate: 'Due date',
     midFinal: 'Midterms & Finals', quizzes: 'Class Quizzes',
     examTitle: 'Exam title', examDate: 'Date', examType: 'Midterm / Final', midterm: 'Midterm', final: 'Final', addExam: '+ Add exam',
     quizTitle: 'Quiz title', quizDate: 'Date', addQuiz: '+ Add quiz',
-    upload: 'Upload', removePhoto: 'Remove', selectGrade: 'Select grade', gradeN: n => 'Grade ' + n,
-    yourName: 'Your name', schoolName: 'School name',
+    upload: 'Upload', removePhoto: 'Remove', selectGrade: 'Select grade', gradeN: n => ord(n) + ' Grade',
+    yourName: 'Your name', schoolName: 'School name', classPh: 'e.g. A, 2, Science',
     confirmRemove: 'Remove this item and everything in it?',
     confirmReset: 'Erase all data and start fresh? This cannot be undone. Consider exporting first.',
     confirmImport: 'Replace all current data with this file?',
@@ -36,7 +37,7 @@ const T = {
     appLabel: 'مدرسه', theme: 'پوسته', th_snack: 'SNACK+', th_light: 'سفید و آبی', th_dark: 'سیاه و آبی', th_green: 'سبز', th_cream: 'کرمی',
     notes: 'یادداشت‌ها', notePh: 'اینجا بنویسید…', addImage: 'تصویر', addText: 'متن', removeImage: 'حذف', noteImg: 'تصویر یادداشت', imageTooBig: 'تصویر برای ذخیره کردن خیلی بزرگ است.', clearInk: 'پاک کردن نقاشی', toolSelect: 'جابه‌جایی', toolPen: 'قلم', toolErase: 'پاک‌کن',
     schedule: 'برنامه', homework: 'تکالیف', exams: 'امتحان‌ها', profile: 'پروفایل',
-    name: 'نام', school: 'مدرسه', grade: 'پایه', years: 'سال تحصیلی', lastLogin: 'آخرین ورود', date: 'تاریخ',
+    name: 'نام', school: 'مدرسه', grade: 'پایه', classGroup: 'کلاس', years: 'سال تحصیلی', lastLogin: 'آخرین ورود', date: 'تاریخ',
     firstVisit: 'اولین بازدید', noPhoto: 'بدون عکس', photoAlt: 'عکس پروفایل',
     exportData: 'خروجی داده‌ها', importData: 'وارد کردن داده', resetData: 'بازنشانی داده', toggleLang: 'English',
     cornerLabel: 'روز / زنگ', cornerLabelRtl: 'زنگ / روز', hourPh: 'ساعت', dayPh: 'روز', cellPh: '—',
@@ -45,12 +46,13 @@ const T = {
     exportSchedule: 'خروجی برنامه (A4)', scheduleEmpty: 'چیزی برای خروجی گرفتن نیست', scheduleExported: 'تصویر برنامه ذخیره شد',
     remove: 'حذف', nothing: 'هنوز چیزی اضافه نشده.',
     required: 'اجباری', optional: 'اختیاری', addRequired: '+ افزودن اجباری', addOptional: '+ افزودن اختیاری',
+    search: 'جستجو', done: 'انجام شد', daysLeft: n => n === 0 ? 'امروز' : num(n) + ' روز مانده', overdue: 'گذشته', noMatch: 'موردی پیدا نشد.',
     assignment: 'عنوان تکلیف', dueDate: 'تاریخ تحویل',
     midFinal: 'میان‌ترم و پایان‌ترم', quizzes: 'کوییزهای کلاس',
     examTitle: 'عنوان امتحان', examDate: 'تاریخ', examType: 'میان‌ترم / پایان‌ترم', midterm: 'میان‌ترم', final: 'پایان‌ترم', addExam: '+ افزودن امتحان',
     quizTitle: 'عنوان کوییز', quizDate: 'تاریخ', addQuiz: '+ افزودن کوییز',
-    upload: 'بارگذاری', removePhoto: 'حذف', selectGrade: 'انتخاب پایه', gradeN: n => 'پایه ' + n,
-    yourName: 'نام شما', schoolName: 'نام مدرسه',
+    upload: 'بارگذاری', removePhoto: 'حذف', selectGrade: 'انتخاب پایه', gradeN: n => 'پایه ' + GRADE_FA[n],
+    yourName: 'نام شما', schoolName: 'نام مدرسه', classPh: 'مثلاً الف، ۲، ریاضی',
     confirmRemove: 'این مورد و همه محتوای آن حذف شود؟',
     confirmReset: 'همه داده‌ها پاک شود و از نو شروع شود؟ این کار قابل بازگشت نیست. بهتر است ابتدا خروجی بگیرید.',
     confirmImport: 'همه داده‌های فعلی با این فایل جایگزین شود؟',
@@ -61,7 +63,7 @@ const T = {
 };
 
 const def = () => ({
-  profile: { name: '', school: '', grade: '', pfp: '', lastLogin: '' },
+  profile: { name: '', school: '', grade: '', class: '', pfp: '', lastLogin: '' },
   notes: { items: [], strokes: [] }, // items: {id,t:'text'|'img',x,y,w,h,v|src}; strokes: {c,w,pts:[[x,y],..]} in board px
   schedule: { hours: [], days: [], cells: {} },
   homework: { required: [], optional: [] },
@@ -112,6 +114,8 @@ const autoYears = () => {
   return num(start) + '-' + num(start + 1);
 };
 const autoDate = () => new Date().toLocaleDateString(loc(), { dateStyle: 'long' });
+// Persian ordinal words for grades 1-12, e.g. 'پایه دوازدهم'.
+const GRADE_FA = ['', 'اول', 'دوم', 'سوم', 'چهارم', 'پنجم', 'ششم', 'هفتم', 'هشتم', 'نهم', 'دهم', 'یازدهم', 'دوازدهم'];
 const ord = n => {
   if (fa()) return num(n);
   const v = n % 100, s = ['th', 'st', 'nd', 'rd'];
@@ -243,7 +247,8 @@ function renderSide() {
     $('div', { class: 'pfp' }, p.pfp ? $('img', { src: p.pfp, alt: t('photoAlt') }) : $('span', { text: t('noPhoto') })),
     info(t('name'), p.name),
     info(t('school'), p.school),
-    info(t('grade'), p.grade ? t('gradeN', num(p.grade)) : ''),
+    info(t('grade'), p.grade ? t('gradeN', +p.grade) : ''),
+    info(t('classGroup'), p.class),
     info(t('years'), autoYears()),
     info(t('lastLogin'), prevLoginText()),
     info(t('date'), autoDate()),
@@ -340,7 +345,7 @@ async function exportSchedule() {
   g.fillText(D.profile.school || 'SNACK+ School', at(0), M + 60);
   g.font = font(56);
   g.fillStyle = tv('--muted');
-  const sub = [D.profile.name, D.profile.grade ? t('gradeN', num(D.profile.grade)) : '', autoYears()].filter(Boolean).join('  ·  ');
+  const sub = [D.profile.name, D.profile.grade ? t('gradeN', +D.profile.grade) : '', D.profile.class, autoYears()].filter(Boolean).join('  ·  ');
   g.fillText(sub, at(0), M + 160);
   if (logo) {
     const lh = 170, lwid = lh * logo.naturalWidth / logo.naturalHeight;
@@ -362,9 +367,20 @@ async function exportSchedule() {
   const rh = Math.min(400, (H - M - top - hh) / days.length);
   const colX = c => rtl ? W - M - lw - (c + 1) * cw : M + lw + c * cw; // left edge of hour column
   const rowY = r => top + hh + r * rh;
+  const R = 36; // corner radius for grid cells, matching the site's rounded shapes
+  const rr = (x, y, w, h, r) => {
+    g.beginPath();
+    g.moveTo(x + r, y);
+    g.arcTo(x + w, y, x + w, y + h, r);
+    g.arcTo(x + w, y + h, x, y + h, r);
+    g.arcTo(x, y + h, x, y, r);
+    g.arcTo(x, y, x + w, y, r);
+    g.closePath();
+  };
   const box = (x, y, w, h, fill) => {
-    g.fillStyle = fill; g.fillRect(x, y, w, h);
-    g.strokeStyle = tv('--line-2'); g.lineWidth = 3; g.strokeRect(x, y, w, h);
+    rr(x, y, w, h, R);
+    g.fillStyle = fill; g.fill();
+    g.strokeStyle = tv('--line-2'); g.lineWidth = 3; g.stroke();
   };
   const wrap = (text, maxW) => {
     const lines = []; let line = '';
@@ -483,17 +499,34 @@ function dateInput(obj, key) {
   return inp;
 }
 
-function list(arr, fields, placeholders, addLabel) {
+// Whole days from today until an ISO date (negative when past).
+const daysUntil = iso => {
+  const [y, m, d] = iso.split('-').map(Number);
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  return Math.round((new Date(y, m - 1, d) - today) / 864e5);
+};
+
+function list(arr, fields, placeholders, addLabel, opts = {}) {
   const wrap = $('div', { class: 'list' });
+  const q = (opts.filter || '').trim().toLowerCase();
+  const shown = arr.map((it, i) => [it, i]).filter(([it]) => !q || String(it.title || '').toLowerCase().includes(q));
   if (!arr.length) wrap.append($('p', { class: 'empty', text: t('nothing') }));
-  arr.forEach((it, i) => {
-    const row = $('div', { class: 'row' });
+  else if (!shown.length) wrap.append($('p', { class: 'empty', text: t('noMatch') }));
+  shown.forEach(([it, i]) => {
+    const row = $('div', { class: 'row' + (it.done ? ' is-done' : '') });
+    if (opts.check) row.append($('input', { type: 'checkbox', class: 'done-check', title: t('done'), 'aria-label': t('done'), checked: !!it.done,
+      on: { change: e => { it.done = e.target.checked; save(); render(); } } }));
     fields.forEach((f, j) => row.append(f === 'type' ? typeSelect(it, f) : DATE_KEYS.has(f)
       ? dateInput(it, f)
       : ed(() => it[f], v => it[f] = v, placeholders[j], j === 0 ? 'main' : '')));
+    if (opts.dateKey && it[opts.dateKey] && !it.done) {
+      const n = daysUntil(it[opts.dateKey]);
+      const late = n < 0;
+      row.append($('span', { class: 'chip' + (late ? ' late' : ''), text: late ? t('overdue') : t('daysLeft', n) }));
+    }
     row.append(icon('−', () => {
-      if (!sure(Object.values(it).some(Boolean))) return;
-      arr.splice(i, 1); save(); render();
+      if (!sure(Object.entries(it).some(([k, v]) => k !== 'done' && Boolean(v)))) return;
+      arr.splice(arr.indexOf(it), 1); save(); render();
     }, t('remove')));
     wrap.append(row);
   });
@@ -620,21 +653,37 @@ function notes() {
     $('h2', { text: t('notes') }), tools, board);
 }
 
+// Search box shared by the homework and exams tabs; it filters rows by title.
+function searchBox(state) {
+  const inp = $('input', { type: 'search', class: 'search', placeholder: t('search'), 'aria-label': t('search'), value: state.filter || '' });
+  inp.addEventListener('input', () => { state.filter = inp.value; save(); renderList(); });
+  return inp;
+}
+let renderList = () => {};
+
 function homework() {
   const H = D.homework;
   const f = ['title', 'due'], ph = [t('assignment'), t('dueDate')];
-  return $('section', { class: 'card' },
-    $('h2', { text: t('required') }), list(H.required, f, ph, t('addRequired')),
-    $('h2', { text: t('optional') }), list(H.optional, f, ph, t('addOptional')));
+  const opts = { filter: H.filter, check: true, dateKey: 'due' };
+  const box = $('div', { class: 'list-wrap' });
+  const draw = () => box.replaceChildren(
+    $('h2', { text: t('required') }), list(H.required, f, ph, t('addRequired'), opts),
+    $('h2', { text: t('optional') }), list(H.optional, f, ph, t('addOptional'), opts));
+  renderList = draw; draw();
+  return $('section', { class: 'card' }, searchBox(H), box);
 }
 
 function exams() {
   const X = D.exams;
-  return $('section', { class: 'card' },
+  const opts = { filter: X.filter, dateKey: 'date' };
+  const box = $('div', { class: 'list-wrap' });
+  const draw = () => box.replaceChildren(
     $('h2', { text: t('midFinal') }),
-    list(X.exams, ['title', 'date', 'type'], [t('examTitle'), t('examDate'), t('examType')], t('addExam')),
+    list(X.exams, ['title', 'date', 'type'], [t('examTitle'), t('examDate'), t('examType')], t('addExam'), opts),
     $('h2', { text: t('quizzes') }),
-    list(X.quizzes, ['title', 'date'], [t('quizTitle'), t('quizDate')], t('addQuiz')));
+    list(X.quizzes, ['title', 'date'], [t('quizTitle'), t('quizDate')], t('addQuiz'), { filter: opts.filter, dateKey: 'date' }));
+  renderList = draw; draw();
+  return $('section', { class: 'card' }, searchBox(X), box);
 }
 
 /* ---------- Profile ---------- */
@@ -666,7 +715,7 @@ function profile() {
   };
   const grade = $('select', { class: 'select', 'aria-label': t('grade'), on: { change: () => { p.grade = grade.value; save(); renderSide(); } } },
     $('option', { value: '', text: t('selectGrade') }),
-    ...Array.from({ length: 12 }, (_, i) => $('option', { value: String(i + 1), text: t('gradeN', num(i + 1)) })));
+    ...Array.from({ length: 12 }, (_, i) => $('option', { value: String(i + 1), text: t('gradeN', i + 1) })));
   grade.value = p.grade || '';
 
   const field = (label, k, ph) => $('div', { class: 'field' },
@@ -678,11 +727,12 @@ function profile() {
       p.pfp ? $('img', { src: p.pfp, alt: t('photoAlt') }) : $('div', { class: 'photo-empty', text: t('noPhoto') }),
       $('div', { class: 'photo-btns' },
         btn(t('upload'), () => file.click()),
-        btn(t('removePhoto'), () => { p.pfp = ''; save(); render(); }, 'ghost')),
+        btn(t('removePhoto'), () => { if (confirm(t('confirmRemove'))) { p.pfp = ''; save(); render(); } }, 'danger')),
       file),
     $('div', { class: 'fields' },
       field(t('name'), 'name', t('yourName')),
       field(t('school'), 'school', t('schoolName')),
+      field(t('classGroup'), 'class', t('classPh')),
       $('div', { class: 'field' }, $('div', { class: 'flabel', text: t('grade') }), grade)));
 }
 // Mobile sidebar popup
