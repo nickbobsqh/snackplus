@@ -7,12 +7,12 @@
     {
       "suffix": "Tunes",
       "url": "/tunes",
-      "description": "Music streaming by SNACK."
+      "description": "SNACK+ Music Player"
     },
     {
       "suffix": "School",
       "url": "/school",
-      "description": "Learning courses by SNACK."
+      "description": "SNACK+ School Website"
     }
   ],
   "items": []
