@@ -1,0 +1,19 @@
+{
+  "site": {
+    "recentDays": 90,
+    "newDays": 120
+  },
+  "services": [
+    {
+      "suffix": "Tunes",
+      "url": "/tunes",
+      "description": "Music streaming by SNACK."
+    },
+    {
+      "suffix": "School",
+      "url": "/school",
+      "description": "Learning courses by SNACK."
+    }
+  ],
+  "items": []
+}

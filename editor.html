@@ -1,46 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SNACK+ Editor</title>
-<link rel="icon" href="icon.ico">
-<link rel="stylesheet" href="style.css">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SNACK+ Editor</title><link rel="icon" href="icon.ico"><link rel="stylesheet" href="style.css">
 <style>
-body{overflow:auto}
-.ed{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:14px;display:grid;grid-template-columns:280px 1fr;gap:12px;min-height:100vh}
-.ed .head{grid-column:1/-1;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:24px;padding:10px 16px}
-.ed .head img{height:50px}.ed .head .sp{flex:1}
-.list{border-radius:24px;padding:10px;display:flex;flex-direction:column;gap:6px;max-height:calc(100vh - 120px);overflow:auto;position:sticky;top:14px;align-self:start}
-.li{padding:10px 12px;border-radius:14px;cursor:pointer;border:1px solid transparent;font-size:14px}
-.li:hover{background:rgba(255,255,255,.08)}.li.on{background:rgba(232,89,12,.35);border-color:var(--accent2)}
-.li small{display:block;opacity:.6}
-.form{border-radius:24px;padding:20px}
-.f{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.f label{display:flex;flex-direction:column;gap:4px;font-size:12px;opacity:.9}
-.f .w{grid-column:1/-1}
-.f .field{width:100%;font-family:inherit}
-.chk{display:flex;gap:16px;flex-wrap:wrap;grid-column:1/-1}
-.chk label{flex-direction:row;align-items:center;gap:6px;font-size:14px}
-.epr{display:grid;grid-template-columns:.6fr 1.2fr 3fr auto auto auto;gap:6px;margin-bottom:6px}
-.preview{width:90px;aspect-ratio:2/3;object-fit:cover;border-radius:10px;background:#3b0f6b}
-.danger{background:#7a1a1a}
-@media(max-width:800px){.ed{grid-template-columns:1fr}.list{position:static;max-height:240px}.f{grid-template-columns:1fr}.epr{grid-template-columns:1fr}}
-</style>
-</head>
-<body>
-<div class="blob b1"></div><div class="blob b2"></div>
-<div class="ed">
-  <div class="head glass">
-    <img src="logo.png" alt="SNACK+"><b>Editor</b><span class="sp"></span>
-    <button class="btn" id="open">Open movies.txt</button>
-    <button class="btn" id="reload">Reload from site</button>
-    <button class="btn pri" id="save">Save</button>
-  </div>
-  <div class="list glass"><button class="btn pri" id="addM">+ Movie</button><button class="btn pri" id="addS">+ Show</button><div id="items"></div></div>
-  <div class="form glass" id="form"></div>
-</div>
-<div id="toast" class="toast"></div>
-<script src="editor.js"></script>
-</body>
-</html>
+body{display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:12px;padding:10px 20px;flex-wrap:wrap}
+header .logo{width:64px;height:62px}
+header b{font-size:26px;font-weight:800;color:var(--act)}
+header .sp{flex:1}
+.wrap{flex:1;display:grid;grid-template-columns:300px 1fr;gap:16px;padding:0 20px 20px;min-height:0}
+.pane{background:var(--main);border-radius:28px;padding:16px;overflow:auto}
+.li{display:flex;align-items:center;gap:10px;width:100%;border:0;background:var(--bg);border-radius:16px;padding:8px;margin-bottom:8px;text-align:left}
+.li.on{outline:2px solid var(--act)}
+.li img{width:36px;height:54px;object-fit:cover;border-radius:8px;background:var(--line)}
+.li small{color:var(--sub);display:block}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0 14px}
+.ck{display:flex;gap:18px;flex-wrap:wrap;margin:14px 0}
+.ck label{display:flex;gap:8px;align-items:center;font-weight:600}
+input[type=checkbox]{width:20px;height:20px;accent-color:var(--act)}
+.seas{background:var(--bg);border-radius:20px;padding:12px;margin:12px 0}
+.epr{display:grid;grid-template-columns:1fr 90px 2fr auto auto;gap:8px;align-items:center;margin-bottom:8px}
+.epr label{display:flex;gap:4px;align-items:center;font-size:12px;white-space:nowrap}
+h3{color:var(--act);margin:18px 0 6px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+@media(max-width:800px){.wrap{grid-template-columns:1fr}.epr{grid-template-columns:1fr 1fr}}
+</style></head><body>
+<header><a class="logo" href="./" aria-label="SNACK+"></a><b>Editor</b><span class="sp"></span>
+<button class="btn sm" id="load">Load data.json</button><button class="btn sm" id="imp">Import file</button><input type="file" id="f" accept=".json" class="hide" style="display:none">
+<button class="btn sm" id="cp"></button><button class="btn p sm" id="dl"></button>
+<button class="ib" id="gear" style="width:42px;height:42px"></button></header>
+<div class="wrap"><div class="pane"><div class="row" style="margin-bottom:10px"><button class="btn p sm" id="am"></button><button class="btn sm" id="as"></button></div>
+<input type="text" id="fs" placeholder="Filter..." style="margin-bottom:10px"><div id="list"></div>
+<h3>Services</h3><div id="svc"></div><button class="btn sm" id="asv"></button>
+<h3>Site</h3><div class="g2"><div><label class="l">Recently added window (days)</label><input type="number" id="rd"></div><div><label class="l">New window (days)</label><input type="number" id="nd"></div></div></div>
+<div class="pane" id="form"></div></div>
+<div class="modalbg" id="mb"><div class="modal" style="max-width:480px"><div class="pad"><h2>Theme</h2><div class="themes" id="th"></div><div class="row" style="margin-top:16px"><button class="btn p" onclick="mb.classList.remove('on')">Done</button></div></div></div></div>
+<script src="common.js"></script>
+<script>
+const $=s=>document.querySelector(s),mb=$('#mb');
+let D=store.get('editorDraft',null),cur=0,dirty=false;
+const today=()=>new Date().toISOString().slice(0,10);
+const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'untitled';
+function save(){store.set('editorDraft',D)}
+function chrome(){$('#gear').innerHTML=ic('gear');$('#cp').innerHTML=ic('copy')+'Copy JSON';$('#dl').innerHTML=ic('save')+'Download data.json';$('#am').innerHTML=ic('plus')+'Movie';$('#as').innerHTML=ic('plus')+'Show';$('#asv').innerHTML=ic('plus')+'Add service'}
+function clean(){const o=JSON.parse(JSON.stringify(D));return o}
+function init(d){D=d;D.items=D.items||[];D.services=D.services||[];D.site=D.site||{recentDays:90,newDays:120};cur=0;save();all()}
+function all(){list();svc();form();$('#rd').value=D.site.recentDays;$('#nd').value=D.site.newDays}
+function list(){const f=$('#fs').value.toLowerCase();$('#list').innerHTML=D.items.map((i,n)=>[i,n]).filter(([i])=>i.title.toLowerCase().includes(f)).map(([i,n])=>`<button class="li ${n==cur?'on':''}" data-n="${n}"><img src="${esc(i.cover)}" alt=""><span><b>${esc(i.title||'Untitled')}</b><small>${i.type} - ${i.year||''}</small></span></button>`).join('')}
+function svc(){$('#svc').innerHTML=D.services.map((s,n)=>`<div class="seas"><div class="row"><input type="text" data-s="${n}.suffix" value="${esc(s.suffix)}" placeholder="Suffix (e.g. Tunes)" style="flex:1"><button class="ib" style="width:36px;height:36px" data-rs="${n}">${ic('trash')}</button></div>
+<input type="text" data-s="${n}.url" value="${esc(s.url)}" placeholder="/path" style="margin-top:6px"><input type="text" data-s="${n}.description" value="${esc(s.description||'')}" placeholder="Description" style="margin-top:6px"></div>`).join('')}
+const F=(l,k,v,t='text')=>`<div><label class="l">${l}</label><input type="${t}" data-k="${k}" value="${esc(v??'')}"></div>`;
+function form(){const i=D.items[cur];if(!i){$('#form').innerHTML='<p style="color:var(--sub)">No item selected. Add a movie or show.</p>';return}
+ let h=`<div class="row"><h2 style="margin:0;color:var(--act);flex:1">${esc(i.title||'Untitled')}</h2><button class="btn sm" id="dup">${ic('copy')}Duplicate</button><button class="btn sm" id="del">${ic('trash')}Delete</button></div>
+ <div class="g2">${F('Title','title',i.title)}${F('ID (used in share link)','id',i.id)}${F('Year','year',i.year,'number')}${F('Release date','released',i.released,'date')}${F('Date added','added',i.added,'date')}${F('Rating (0-10)','rating',i.rating,'number')}
+ ${i.type=='movie'?F('Duration (e.g. 1h 52m)','duration',i.duration):''}${F('Director','director',i.director)}${F('Genres (comma separated)','genres',(i.genres||[]).join(', '))}${F('Cast (comma separated)','cast',(i.cast||[]).join(', '))}
+ ${F('Cover image link/path','cover',i.cover)}${F('Banner image link/path','banner',i.banner)}</div>
+ <label class="l">Description</label><textarea data-k="description" rows="4">${esc(i.description)}</textarea>
+ <div class="ck"><label><input type="checkbox" data-c="subbed" ${i.subbed?'checked':''}>Persian subtitles</label><label><input type="checkbox" data-c="dubbed" ${i.dubbed?'checked':''}>Persian dubbing</label><label><input type="checkbox" data-c="exclusive" ${i.exclusive?'checked':''}>Dubbed by SNACK</label>
+ ${i.type=='movie'?`<label><input type="checkbox" data-c="downloadable" ${i.downloadable?'checked':''}>Downloadable</label>`:''}</div>`;
+ if(i.type=='movie')h+=F('Video link (used for Watch and Download)','url',i.url);
+ else{h+='<h3>Seasons and episodes</h3>'+(i.seasons||[]).map((s,si)=>`<div class="seas"><div class="row"><input type="text" data-ss="${si}" value="${esc(s.title)}" style="flex:1"><button class="btn sm" data-ae="${si}">${ic('plus')}Episode</button><button class="ib" style="width:36px;height:36px" data-rse="${si}">${ic('trash')}</button></div>
+ <div style="margin-top:10px">${s.episodes.map((e,ei)=>`<div class="epr"><input type="text" data-e="${si}.${ei}.title" value="${esc(e.title)}" placeholder="Title"><input type="text" data-e="${si}.${ei}.duration" value="${esc(e.duration||'')}" placeholder="Length"><input type="text" data-e="${si}.${ei}.url" value="${esc(e.url)}" placeholder="Video link"><label><input type="checkbox" data-ed="${si}.${ei}" ${e.downloadable?'checked':''}>Download</label><button class="ib" style="width:36px;height:36px" data-re="${si}.${ei}">${ic('trash')}</button></div>`).join('')}</div></div>`).join('')+`<button class="btn sm" id="asn">${ic('plus')}Season</button>`}
+ $('#form').innerHTML=h}
+function newItem(type){const t=today(),n=D.items.length+1;const i={id:'new-'+type+'-'+n,type,title:'New '+type,year:new Date().getFullYear(),released:t,added:t,genres:[],rating:0,description:'',director:'',cast:[],cover:'',banner:'',subbed:false,dubbed:false,exclusive:false};
+ if(type=='movie'){i.duration='';i.url='';i.downloadable=true}else i.seasons=[{number:1,title:'Season 1',episodes:[]}];
+ D.items.unshift(i);cur=0;save();all()}
+const csv=v=>v.split(',').map(x=>x.trim()).filter(Boolean);
+document.addEventListener('input',e=>{const t=e.target,i=D.items[cur];
+ if(t.dataset.k){let v=t.value;const k=t.dataset.k;if(k=='genres'||k=='cast')v=csv(v);else if(t.type=='number')v=v===''?'':+v;i[k]=v;if(k=='title'){const h=$('#form h2');h.textContent=v||'Untitled'}list()}
+ else if(t.dataset.ss!=null)i.seasons[t.dataset.ss].title=t.value;
+ else if(t.dataset.e){const[a,b,k]=t.dataset.e.split('.');i.seasons[a].episodes[b][k]=t.value}
+ else if(t.dataset.s){const[a,k]=t.dataset.s.split('.');D.services[a][k]=t.value}
+ else if(t.id=='rd')D.site.recentDays=+t.value;else if(t.id=='nd')D.site.newDays=+t.value;
+ else if(t.id=='fs')return list();else return;save()});
+document.addEventListener('change',e=>{const t=e.target,i=D.items[cur];if(t.dataset.c){i[t.dataset.c]=t.checked;save()}if(t.dataset.ed){const[a,b]=t.dataset.ed.split('.');i.seasons[a].episodes[b].downloadable=t.checked;save()}});
+document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;const d=t.dataset,i=D.items[cur];
+ if(d.n!=null){cur=+d.n;list();form();return}
+ if(t.id=='del'){if(confirm('Delete this item?')){D.items.splice(cur,1);cur=0;save();all()}return}
+ if(t.id=='dup'){const c=JSON.parse(JSON.stringify(i));c.id+='-copy';c.title+=' (copy)';D.items.splice(cur+1,0,c);cur++;save();all();return}
+ if(d.ae!=null){const s=i.seasons[d.ae];s.episodes.push({title:'Episode '+(s.episodes.length+1),duration:'',url:'',downloadable:true})}
+ else if(t.id=='asn'){const n=i.seasons.length+1;i.seasons.push({number:n,title:'Season '+n,episodes:[]})}
+ else if(d.rse!=null){i.seasons.splice(d.rse,1);i.seasons.forEach((s,n)=>s.number=n+1)}
+ else if(d.re){const[a,b]=d.re.split('.');i.seasons[a].episodes.splice(b,1)}
+ else if(d.rs!=null){D.services.splice(d.rs,1);save();svc();return}
+ else return;save();form()});
+$('#am').onclick=()=>newItem('movie');$('#as').onclick=()=>newItem('show');
+$('#asv').onclick=()=>{D.services.push({suffix:'',url:'/',description:''});save();svc()};
+$('#gear').onclick=()=>{mb.classList.add('on');themePicker($('#th'))};
+mb.onclick=e=>{if(e.target==mb)mb.classList.remove('on')};
+function out(){const o=clean();o.items.forEach(i=>{if(!i.id)i.id=slug(i.title)});return JSON.stringify(o,null,2)}
+$('#dl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([out()],{type:'application/json'}));a.download='data.json';a.click();toast('Replace data.json with this file')};
+$('#cp').onclick=()=>navigator.clipboard.writeText(out()).then(()=>toast('JSON copied'));
+$('#imp').onclick=()=>$('#f').click();
+$('#f').onchange=e=>e.target.files[0].text().then(t=>{try{init(JSON.parse(t));toast('Imported')}catch(_){toast('Invalid JSON')}});
+$('#load').onclick=()=>fetch('data.json').then(r=>r.json()).then(d=>{if(confirm('Replace the current draft with data.json?')){init(d);toast('Loaded')}}).catch(()=>toast('Could not load data.json'));
+chrome();
+if(D)all();else fetch('data.json').then(r=>r.json()).then(init).catch(()=>init({items:[],services:[],site:{recentDays:90,newDays:120}}));
+</script></body></html>

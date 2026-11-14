@@ -1,30 +1,180 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SNACK+</title>
-<link rel="icon" href="icon.ico">
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SNACK+</title><link rel="icon" href="icon.ico"><link rel="stylesheet" href="style.css">
+<style>
+.app{display:grid;grid-template-columns:132px 1fr;grid-template-rows:84px 1fr;height:100vh}
+.lg{grid-area:1/1;display:grid;place-items:center}
+.top{grid-area:1/2;display:flex;align-items:center;gap:12px;padding:0 20px 0 0}
+.side{grid-area:2/1;display:flex;flex-direction:column;gap:6px;padding:8px 10px;overflow:auto}
+.tab{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:0;border-radius:var(--r);padding:10px 4px;color:var(--sub);font-size:12px;font-weight:600;text-align:center}
+.tab:hover{background:var(--main)}
+.tab.on{background:var(--main);color:var(--act)}
+.tab.on svg{color:var(--act)}
+.search{flex:1;display:flex;align-items:center;gap:10px;background:var(--main);border-radius:999px;padding:0 18px;height:48px;color:var(--act)}
+.search input{flex:1;background:none;border:0;outline:0;height:100%;font-size:15px;color:var(--txt)}
+.search input::placeholder{color:var(--sub)}
+.search input:focus{border:0}
+.content{grid-area:2/2;background:var(--main);border-radius:28px 0 0 0;padding:22px 28px;overflow:auto}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:18px}
+.bar h1{margin:0 auto 0 0;font-size:24px;color:var(--act)}
+.bar small{display:block;color:var(--sub);font-size:13px;font-weight:400;margin-top:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}
+.card{background:var(--bg);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column}
+.cv{position:relative;aspect-ratio:2/3;cursor:pointer;background:var(--line)}
+.cv img{width:100%;height:100%;object-fit:cover;display:block}
+.cv .bd{position:absolute;top:8px;left:8px;display:flex;flex-direction:column;gap:5px;align-items:flex-start}
+.cv .wl{position:absolute;top:8px;right:8px;width:38px;height:38px;border-radius:50%;border:0;background:var(--main);color:var(--act);display:grid;place-items:center;padding:0}
+.cb{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.cb h3{margin:0;font-size:16px;cursor:pointer}
+.meta{display:flex;flex-wrap:wrap;gap:6px 10px;color:var(--sub);font-size:12.5px;align-items:center}
+.meta .i{width:15px;height:15px;color:var(--act)}
+.meta span{display:inline-flex;align-items:center;gap:3px}
+.gen{display:flex;flex-wrap:wrap;gap:5px}
+.acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+.empty{text-align:center;color:var(--sub);padding:60px 0}
+.svc{display:flex;align-items:center;gap:6px;background:var(--bg);border-radius:var(--r);padding:20px 26px;text-decoration:none;color:var(--act);min-width:300px}
+.svc .logo{width:90px;height:86px;flex:none}
+.svc b{font-size:34px;font-weight:800;letter-spacing:-.5px}
+.svc small{display:block;color:var(--sub);font-size:13px;font-weight:400;margin-top:2px}
+.svc:hover{outline:3px solid var(--act)}
+/* detail */
+.ban{height:260px;background:var(--line) center/cover;position:relative}
+.ban .x{position:absolute;top:14px;right:14px}
+.det{display:flex;gap:22px;padding:0 28px 28px;margin-top:-80px;position:relative}
+.det .pic{width:170px;aspect-ratio:2/3;border-radius:var(--r);object-fit:cover;border:5px solid var(--main);background:var(--line);flex:none}
+.det .tx{padding-top:84px;min-width:0;flex:1}
+.det h2{margin:0 0 8px;font-size:28px}
+.det p{line-height:1.55;color:var(--sub);margin:12px 0}
+.info{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font-size:14px;margin:12px 0}
+.info dt{color:var(--sub)}.info dd{margin:0}
+.eps{padding:0 28px 28px}
+.eps h3{margin:18px 0 8px;color:var(--act)}
+.ep{display:flex;align-items:center;gap:12px;background:var(--bg);border-radius:16px;padding:10px 14px;margin-bottom:8px;flex-wrap:wrap}
+.ep .n{width:30px;height:30px;border-radius:50%;background:var(--act);color:var(--onact);display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.ep .t{flex:1;min-width:120px}.ep .t small{display:block;color:var(--sub)}
+.player video{width:100%;display:block;background:#000;max-height:70vh}
+.player .ph{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 20px}
+.pad{padding:24px 28px}
+.pad h2{margin:0 0 14px;color:var(--act)}
+.av{width:110px;height:110px;border-radius:50%;background:var(--bg);color:var(--act);display:grid;place-items:center;overflow:hidden;margin:0 auto 14px}
+.av img{width:100%;height:100%;object-fit:cover}.av .i{width:56px;height:56px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.hide{display:none!important}
+@media(max-width:700px){.app{grid-template-columns:76px 1fr}.logo{width:60px;height:58px}.tab{font-size:10px}.content{padding:16px}.det{flex-direction:column;margin-top:-60px}.det .tx{padding-top:0}.svc{min-width:0;width:100%}}
+</style></head><body>
 <div class="app">
-  <div class="logo glass"><img src="logo.png" alt="SNACK+"></div>
-  <header class="top glass">
-    <button id="profileBtn" class="round" title="Profile"><img id="avatar" alt=""><svg id="avatarIcon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></button>
-    <button id="settingsBtn" class="round plain" title="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
-    <input id="search" type="search" placeholder="Search...">
-  </header>
-  <nav id="tabs" class="side glass"></nav>
-  <main class="main glass">
-    <div class="bar"><h1 id="title"></h1><div id="tools"></div></div>
-    <div id="grid" class="grid"></div>
-  </main>
+ <div class="lg"><a class="logo" href="./" aria-label="SNACK+"></a></div>
+ <div class="top">
+  <button class="ib" id="prof" title="Profile"></button>
+  <button class="ib" id="gear" title="Settings"></button>
+  <label class="search"><span id="si"></span><input id="q" type="text" placeholder="Search titles, genres, cast..." autocomplete="off"></label>
+ </div>
+ <nav class="side" id="side"></nav>
+ <main class="content" id="main"></main>
 </div>
+<div class="modalbg" id="mb"><div class="modal" id="md"></div></div>
+<script src="common.js"></script>
+<script>
+const TABS=[
+['recent','Recently Added','history'],['new','New','spark'],['subbed','Subbed','cc'],['dubbed','Dubbed','mic'],['exclusive','Exclusives','star'],['later','Watch Later','bookmark'],['services','Other Services','apps']];
+const DESC={recent:'Recently added to SNACK+',new:'New releases',subbed:'With Persian subtitles',dubbed:'With Persian dubbing',exclusive:'Dubbed by SNACK',later:'Your saved list',services:'More from SNACK'};
+const SORTS={added:['Date added',(a,b)=>b.added.localeCompare(a.added)],released:['Release date',(a,b)=>String(b.released).localeCompare(String(a.released))],title:['Title A-Z',(a,b)=>a.title.localeCompare(b.title)],titleD:['Title Z-A',(a,b)=>b.title.localeCompare(a.title)],rating:['Rating',(a,b)=>(b.rating||0)-(a.rating||0)],year:['Year',(a,b)=>(b.year||0)-(a.year||0)]};
+let DATA={items:[],services:[],site:{}},tab=store.get('tab','recent'),later=store.get('later',[]),prof=store.get('profile',{name:'',pic:''});
+const $=s=>document.querySelector(s),main=$('#main');
+const view={sort:{},type:'all',genre:'all'};
+const daysAgo=d=>(Date.now()-new Date(d))/864e5;
+const byId=id=>DATA.items.find(i=>i.id==id);
+const slink=id=>location.href.split('#')[0]+'#/'+id;
+const epCount=i=>(i.seasons||[]).reduce((n,s)=>n+s.episodes.length,0);
 
-<div id="modal" class="overlay hidden"><div class="dialog glass" id="dialog"></div></div>
-<div id="toast" class="toast"></div>
-<script src="app.js"></script>
-</body>
-</html>
+function filt(t){const S=DATA.site||{};const L=DATA.items;
+ return {recent:()=>L.filter(i=>daysAgo(i.added)<=(S.recentDays||90)),new:()=>L.filter(i=>daysAgo(i.released)<=(S.newDays||120)&&daysAgo(i.released)>=-30),subbed:()=>L.filter(i=>i.subbed),dubbed:()=>L.filter(i=>i.dubbed),exclusive:()=>L.filter(i=>i.exclusive),later:()=>later.map(byId).filter(Boolean)}[t]()}
+function renderChrome(){
+ $('#si').innerHTML=ic('search');$('#gear').innerHTML=ic('gear');
+ $('#prof').innerHTML=prof.pic?`<img src="${prof.pic}" style="width:100%;height:100%;object-fit:cover">`:ic('person');
+ $('#prof').title=prof.name||'Profile';
+ $('#side').innerHTML=TABS.map(([k,n,i])=>`<button class="tab ${tab==k&&!$('#q').value?'on':''}" data-k="${k}">${ic(i)}${n}</button>`).join('');
+}
+function render(){
+ renderChrome();const q=$('#q').value.trim().toLowerCase();
+ if(!q&&tab=='services')return services();
+ let list,title,sub;
+ if(q){list=DATA.items.filter(i=>[i.title,i.description,i.director,...(i.genres||[]),...(i.cast||[])].join(' ').toLowerCase().includes(q));title='Search results';sub=`"${esc(q)}" in all titles`}
+ else{list=filt(tab);title=TABS.find(t=>t[0]==tab)[1];sub=DESC[tab]}
+ const key=q?'search':tab;
+ const genres=[...new Set(DATA.items.flatMap(i=>i.genres||[]))].sort();
+ if(view.type!='all')list=list.filter(i=>i.type==view.type);
+ if(view.genre!='all')list=list.filter(i=>(i.genres||[]).includes(view.genre));
+ const so=view.sort[key]||(tab=='new'?'released':'added');
+ list=[...list].sort(SORTS[so][1]);
+ const opt=(o,v)=>Object.entries(o).map(([k,x])=>`<option value="${k}" ${k==v?'selected':''}>${Array.isArray(x)?x[0]:x}</option>`).join('');
+ main.innerHTML=`<div class="bar"><h1>${title}<small>${sub} - ${list.length} title${list.length==1?'':'s'}</small></h1>
+ <select id="ft">${opt({all:'All types',movie:'Movies',show:'Shows'},view.type)}</select>
+ <select id="fg"><option value="all">All genres</option>${genres.map(g=>`<option ${g==view.genre?'selected':''}>${esc(g)}</option>`).join('')}</select>
+ <select id="so">${opt(SORTS,so)}</select>
+ ${tab=='later'&&!q?`<button class="btn sm" id="exp">${ic('up')}Export</button><button class="btn sm" id="imp">${ic('download')}Import</button><input type="file" id="impf" accept=".json" class="hide">`:''}</div>
+ ${list.length?`<div class="grid">${list.map(card).join('')}</div>`:`<div class="empty">${tab=='later'&&!q?'Nothing saved yet. Use the bookmark on any title.':'No titles found.'}</div>`}`;
+ $('#ft').onchange=e=>{view.type=e.target.value;render()};$('#fg').onchange=e=>{view.genre=e.target.value;render()};$('#so').onchange=e=>{view.sort[key]=e.target.value;render()};
+ if($('#exp')){$('#exp').onclick=exportLater;$('#imp').onclick=()=>$('#impf').click();$('#impf').onchange=importLater}
+}
+function badges(i){return `${i.exclusive?'<span class="chip a">Dubbed by SNACK</span>':''}${i.subbed?'<span class="chip a">Sub</span>':''}${i.dubbed&&!i.exclusive?'<span class="chip a">Dub</span>':''}`}
+function card(i){const s=later.includes(i.id);
+ const m=i.type=='movie'?`<span>${i.duration||''}</span>`:`<span>${(i.seasons||[]).length} season${(i.seasons||[]).length==1?'':'s'}, ${epCount(i)} ep</span>`;
+ return `<article class="card" data-id="${i.id}"><div class="cv" data-open="${i.id}"><img loading="lazy" src="${esc(i.cover)}" alt="${esc(i.title)}"><div class="bd"><span class="chip">${i.type=='movie'?'Movie':'Show'}</span>${badges(i)}</div>
+ <button class="wl" data-wl="${i.id}" title="Watch later">${ic(s?'bookmark':'bookmarkO')}</button></div>
+ <div class="cb"><h3 data-open="${i.id}">${esc(i.title)}</h3><div class="meta"><span>${i.year||''}</span>${m}<span>${ic('star')}${i.rating??'-'}</span></div>
+ <div class="gen">${(i.genres||[]).map(g=>`<span class="chip">${esc(g)}</span>`).join('')}</div>
+ <div class="acts">${actions(i)}</div></div></article>`}
+function actions(i){
+ if(i.type=='show')return `<button class="btn p sm" data-open="${i.id}">${ic('list')}Episodes</button>`;
+ return `<button class="btn p sm" data-watch="${i.id}">${ic('play')}Watch</button>${dl(i.url,i.downloadable,i.title)}<button class="btn sm" data-share="${i.id}">${ic('share')}Share</button>`}
+function dl(url,ok,name,sm='sm'){return ok&&url?`<a class="btn ${sm}" href="${esc(url)}" download="${esc(name)}" target="_blank" rel="noopener">${ic('download')}Download</a>`:`<button class="btn ${sm}" disabled title="Not available">${ic('download')}Download</button>`}
+function services(){main.innerHTML=`<div class="bar"><h1>Other Services<small>${DESC.services}</small></h1></div><div style="display:flex;flex-wrap:wrap;gap:18px">${DATA.services.map(s=>`<a class="svc" href="${esc(s.url)}"><span class="logo"></span><div><b>${esc(s.suffix)}</b><small>${esc(s.description||'')} ${esc(s.url)}</small></div></a>`).join('')}</div>`}
+/* modals */
+const mb=$('#mb'),md=$('#md');
+function open(h){md.innerHTML=h;mb.classList.add('on');md.scrollTop=0}
+function closeM(){mb.classList.remove('on');md.innerHTML='';if(location.hash.length>2)history.replaceState(null,'',location.pathname+location.search)}
+mb.onclick=e=>{if(e.target==mb)closeM()};
+document.onkeydown=e=>{if(e.key=='Escape')closeM()};
+function detail(id){const i=byId(id);if(!i)return;history.replaceState(null,'','#/'+id);
+ const info=[['Type',i.type=='movie'?'Movie':'Show'],['Year',i.year],['Released',i.released],['Added',i.added],['Duration',i.type=='movie'?i.duration:`${(i.seasons||[]).length} seasons, ${epCount(i)} episodes`],['Director',i.director],['Cast',(i.cast||[]).join(', ')],['Genres',(i.genres||[]).join(', ')],['Rating',i.rating],['Languages',[i.subbed&&'Persian subtitles',i.dubbed&&'Persian dubbing',i.exclusive&&'Dubbed by SNACK'].filter(Boolean).join(', ')]].filter(x=>x[1]);
+ open(`<div class="ban" style="background-image:url('${esc(i.banner)}')"><button class="ib x" data-close>${ic('close')}</button></div>
+ <div class="det"><img class="pic" src="${esc(i.cover)}" alt=""><div class="tx"><h2>${esc(i.title)}</h2><div class="gen">${badges(i)}</div>
+ <p>${esc(i.description)}</p><dl class="info">${info.map(([a,b])=>`<dt>${a}</dt><dd>${esc(b)}</dd>`).join('')}</dl>
+ <div class="acts">${i.type=='movie'?actions(i):''}<button class="btn sm" data-wl="${i.id}">${ic(later.includes(i.id)?'bookmark':'bookmarkO')}${later.includes(i.id)?'Saved':'Watch later'}</button></div></div></div>
+ ${i.type=='show'?`<div class="eps">${(i.seasons||[]).map((s,si)=>`<h3>${esc(s.title||'Season '+s.number)}</h3>${s.episodes.map((e,ei)=>`<div class="ep"><span class="n">${ei+1}</span><div class="t">${esc(e.title)}<small>${esc(e.duration||'')}</small></div>
+ <button class="btn p sm" data-ep="${i.id}|${si}|${ei}">${ic('play')}Watch</button>${dl(e.url,e.downloadable,i.title+' - '+e.title)}<button class="btn sm" data-share="${i.id}|${si}|${ei}">${ic('share')}Share</button></div>`).join('')}`).join('')}</div>`:''}`)}
+function player(title,url,back){open(`<div class="player"><div class="ph"><b>${esc(title)}</b><button class="ib" data-close>${ic('close')}</button></div><video src="${esc(url)}" controls autoplay playsinline></video></div>`)}
+function share(ref){const [id,s,e]=ref.split('|');const i=byId(id);let u=slink(id)+(s!=null?`?s=${+s+1}&e=${+e+1}`:'');
+ u=u.replace('?s=','/s').replace('&e=','e');
+ const t=i.title;if(navigator.share)navigator.share({title:t,url:u}).catch(()=>{});else(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>toast('Link copied'),()=>prompt('Copy link',u))}
+function toggleLater(id){later=later.includes(id)?later.filter(x=>x!=id):[...later,id];store.set('later',later);toast(later.includes(id)?'Saved to Watch Later':'Removed from Watch Later')}
+function exportLater(){const b=new Blob([JSON.stringify({snackWatchLater:later},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='snack-watch-later.json';a.click()}
+function importLater(e){const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const j=JSON.parse(t);const l=(j.snackWatchLater||j).filter(x=>typeof x=='string');const n=l.filter(x=>!later.includes(x)&&byId(x));later=[...later,...n];store.set('later',later);toast(`Imported ${n.length} title(s)`);render()}catch(_){toast('Invalid file')}})}
+function profile(){open(`<div class="pad"><h2>Profile</h2><div class="av" id="av">${prof.pic?`<img src="${prof.pic}">`:ic('person')}</div>
+ <div class="row" style="justify-content:center;margin:0 0 10px"><button class="btn sm" id="pp">${ic('up')}Choose picture</button><button class="btn sm" id="pr">${ic('trash')}Remove</button><input type="file" id="pf" accept="image/*" class="hide"></div>
+ <label class="l">Name</label><input type="text" id="pn" maxlength="30" value="${esc(prof.name)}" placeholder="Your name">
+ <div class="row"><button class="btn p" id="ps">${ic('save')}Save</button><button class="btn" data-close>Cancel</button></div></div>`);
+ let pic=prof.pic;const av=$('#av');
+ $('#pp').onclick=()=>$('#pf').click();$('#pr').onclick=()=>{pic='';av.innerHTML=ic('person')};
+ $('#pf').onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d'),s=Math.min(im.width,im.height);x.drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,256,256);pic=c.toDataURL('image/jpeg',.85);av.innerHTML=`<img src="${pic}">`};im.src=URL.createObjectURL(f)};
+ $('#ps').onclick=()=>{prof={name:$('#pn').value.trim(),pic};store.set('profile',prof);closeM();renderChrome();toast(prof.name?`Welcome, ${prof.name}`:'Profile saved')}}
+function settings(){open(`<div class="pad"><h2>Settings</h2><label class="l">Theme</label><div class="themes" id="th"></div>
+ <label class="l" style="margin-top:20px">Data</label><div class="row" style="margin:0"><a class="btn sm" href="editor.html">${ic('edit')}Open JSON editor</a><button class="btn sm" id="cl">${ic('trash')}Clear saved data</button></div>
+ <div class="row"><button class="btn p" data-close>Done</button></div></div>`);
+ themePicker($('#th'),renderChrome);$('#cl').onclick=()=>{if(confirm('Clear profile, watch later list and settings?')){Object.keys(localStorage).filter(k=>k.startsWith('snack.')&&k!='snack.theme').forEach(k=>localStorage.removeItem(k));later=[];prof={name:'',pic:''};closeM();render()}}}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-open],[data-watch],[data-share],[data-wl],[data-ep],[data-close],[data-k],#prof,#gear');if(!t)return;
+ const d=t.dataset;
+ if(d.close!==undefined)return closeM();
+ if(d.k){$('#q').value='';tab=d.k;store.set('tab',tab);return render()}
+ if(t.id=='prof')return profile();if(t.id=='gear')return settings();
+ if(d.open)return detail(d.open);
+ if(d.watch){const i=byId(d.watch);return player(i.title,i.url)}
+ if(d.ep){const [id,s,x]=d.ep.split('|'),i=byId(id),ep=i.seasons[s].episodes[x];return player(`${i.title} - ${ep.title}`,ep.url)}
+ if(d.share)return share(d.share);
+ if(d.wl){toggleLater(d.wl);const inM=mb.classList.contains('on')&&md.querySelector('.det');inM?detail(d.wl):render()}});
+$('#q').oninput=render;
+function route(){const m=location.hash.match(/^#\/([^/?]+)(?:\/s(\d+)e(\d+))?/);if(m&&byId(m[1])){detail(m[1]);if(m[2]){const i=byId(m[1]),ep=i.seasons?.[m[2]-1]?.episodes[m[3]-1];ep&&player(`${i.title} - ${ep.title}`,ep.url)}}}
+fetch('data.json').then(r=>r.json()).then(d=>{DATA=d;render();route()}).catch(()=>{main.innerHTML='<div class="empty">Could not load data.json. Serve this folder over HTTP (e.g. GitHub Pages).</div>';renderChrome()});
+renderChrome();
+</script></body></html>
