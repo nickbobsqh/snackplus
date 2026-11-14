@@ -15,5 +15,40 @@
       "description": "SNACK+ School Website"
     }
   ],
-  "items": []
+  "items": [
+    {
+      "id": "new-show-1",
+      "type": "show",
+      "title": "New show",
+      "year": 2026,
+      "released": "2026-11-14",
+      "added": "2026-11-14",
+      "genres": [
+        "Animation"
+      ],
+      "rating": 8.2,
+      "description": "The misadventures of a talking sea sponge who works at a fast food restaurant, attends a boating school, and lives in a pineapple under the sea.",
+      "director": "Stephen Hillenburg",
+      "cast": [],
+      "cover": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTotP6M8DcGL-lh05V9oHYolteNXY5mEZyV03EQefRQQYoLDX0PwERk4KoA&s=10",
+      "banner": "https://m.media-amazon.com/images/M/MV5BNDUwNjBkMmUtZjM2My00NmM4LTlmOWQtNWE5YTdmN2Y2MTgxXkEyXkFqcGdeQXRyYW5zY29kZS13b3JrZmxvdw@@._V1_.jpg",
+      "subbed": false,
+      "dubbed": false,
+      "exclusive": false,
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Season 1",
+          "episodes": [
+            {
+              "title": "Pizza Delivery",
+              "duration": "11m",
+              "url": "https://download.esenak.ir/Animation/SpongeBob/Shows/SBSP/SpongeBob.S1E5a.Pizza.Delivery.mp4",
+              "downloadable": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
