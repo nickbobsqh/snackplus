@@ -17,10 +17,10 @@
   ],
   "items": [
     {
-      "id": "new-show-1",
+      "id": "sbsp",
       "type": "show",
-      "title": "New show",
-      "year": 2026,
+      "title": "SpongeBob SquarePants",
+      "year": 1999,
       "released": "2026-11-14",
       "added": "2026-11-14",
       "genres": [
