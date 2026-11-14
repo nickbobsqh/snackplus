@@ -1,4 +1,5 @@
-import { joinRoom } from "https://esm.sh/trystero/torrent";
+let joinRoom = null;
+import("https://esm.sh/trystero@0.21.5/torrent").then((m) => { joinRoom = m.joinRoom; state?.servers?.forEach((s) => { try { connect(s); } catch (e) { console.error(e); } }); }).catch((e) => console.error("Trystero failed", e));
 
 const APP_ID = "snack-cord-v1";
 const STORE = "snackcord.v1";
@@ -50,7 +51,7 @@ function newServer(name, code) {
 }
 
 function connect(srv) {
-  if (rt[srv.id]) return;
+  if (rt[srv.id] || !joinRoom) return;
   const room = joinRoom({ appId: APP_ID }, "snackcord-" + srv.code);
   const [sMsg, gMsg] = room.makeAction("msg");
   const [sEdit, gEdit] = room.makeAction("edit");
