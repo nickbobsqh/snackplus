@@ -42,9 +42,10 @@ const rt = {};
 let curSrv = null, curCh = null, members = true;
 
 function newServer(name, code) {
+  code = code || code8();
   return {
-    id: uid(8), name, code: code || code8(),
-    channels: [{ id: uid(6), name: "general", type: "text" }, { id: uid(6), name: "random", type: "text" }],
+    id: uid(8), name, code,
+    channels: [{ id: "gen-" + code, name: "general", type: "text" }, { id: "rnd-" + code, name: "random", type: "text" }],
     messages: {}, // channelId -> [msg]
     deleted: [],  // tombstone ids
   };
@@ -62,12 +63,13 @@ function connect(srv) {
   const r = { room, peers: new Map(), typing: new Map(), sendHello: sHello, sendSync: sSync, sendMsg: sMsg, sendEdit: sEdit, sendDel: sDel, sendTyp: sTyp };
   rt[srv.id] = r;
 
-  const hello = () => ({ name: state.me.name, channels: srv.channels });
+  const hello = () => ({ name: state.me.name, srvName: srv.pending ? null : srv.name, channels: srv.channels });
   room.onPeerJoin((pid) => { sHello(hello(), pid); sSync({ messages: srv.messages, deleted: srv.deleted }, pid); render(); });
   room.onPeerLeave((pid) => { r.peers.delete(pid); r.typing.delete(pid); render(); });
 
   gHello((d, pid) => {
     r.peers.set(pid, { name: d.name || "Unknown" });
+    if (srv.pending && d.srvName) { srv.name = d.srvName; delete srv.pending; }
     // merge channels we don't know
     for (const c of d.channels || []) if (!srv.channels.some((x) => x.id === c.id)) srv.channels.push(c);
     save(); render();
@@ -116,7 +118,7 @@ function purgeDeleted(srv) {
   for (const ch in srv.messages) srv.messages[ch] = srv.messages[ch].filter((x) => !srv.deleted.includes(x.id));
 }
 
-function broadcastHello(srv) { const r = rt[srv.id]; if (r) r.sendHello({ name: state.me.name, channels: srv.channels }); }
+function broadcastHello(srv) { const r = rt[srv.id]; if (r) r.sendHello({ name: state.me.name, srvName: srv.pending ? null : srv.name, channels: srv.channels }); }
 
 /* ---------- Rendering ---------- */
 function render() {
@@ -208,8 +210,8 @@ function openServerDialog() {
       const c = d.querySelector("#mCode").value.trim().toUpperCase();
       if (!/^[A-Z0-9]{8}$/.test(c)) return toast("Invite code must be 8 letters or digits");
       if (state.servers.some((s) => s.code === c)) return toast("You already joined that server");
-      const s = newServer("Server " + c.slice(0, 4), c);
-      s.name = "Joined " + c.slice(0, 4);
+      const s = newServer("Joining " + c.slice(0, 4) + "...", c);
+      s.pending = true;
       addServer(s); closeModal();
     };
   });
