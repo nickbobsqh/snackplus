@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" data-theme="snack">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SNACK+ Cord</title>
+  <link rel="icon" href="assets/icon.ico">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="login" class="screen">
+    <div class="card">
+      <div class="brand big"><span class="logo"></span><span class="suffix">Cord</span></div>
+      <p class="muted">Pick a display name to get started.</p>
+      <form id="loginForm" class="form">
+        <label class="field"><span>Display name</span><input id="loginName" maxlength="32" required autocomplete="off"></label>
+        <div class="row-end"><button class="btn filled" type="submit">Continue</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="app" class="app hidden">
+    <nav class="rail" id="rail"></nav>
+    <aside class="sidebar">
+      <header class="sb-head"><span class="sb-title" id="srvName"></span></header>
+      <div class="chan-list" id="channels"></div>
+      <footer class="userbar">
+        <div class="avatar" id="meAv"></div>
+        <div class="who"><b id="meName"></b><span class="muted">Online</span></div>
+        <button class="icon-btn" id="btnSettings" title="Settings"></button>
+      </footer>
+    </aside>
+    <main class="chat">
+      <header class="topbar">
+        <span class="top-name" id="chName"></span>
+        <span class="top-topic" id="chTopic"></span>
+        <span class="spacer"></span>
+        <button class="icon-btn" id="btnInvite" title="Invite"></button>
+        <button class="icon-btn" id="btnMembers" title="Members"></button>
+      </header>
+      <section class="messages" id="messages"></section>
+      <div class="typing" id="typing"></div>
+      <form class="composer hidden" id="composer">
+        <textarea id="msgInput" rows="1" maxlength="2000" placeholder="Message"></textarea>
+        <button class="icon-btn filled-ic" type="submit" title="Send"></button>
+      </form>
+    </main>
+    <aside class="members hidden" id="members"></aside>
+  </div>
+
+  <div id="modal" class="modal hidden"></div>
+  <div id="toast" class="toast hidden"></div>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
