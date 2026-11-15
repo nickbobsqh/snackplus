@@ -21,7 +21,7 @@
       "type": "show",
       "title": "SpongeBob SquarePants",
       "year": 1999,
-      "released": "2026-11-14",
+      "released": "1999-05-01",
       "added": "2026-11-14",
       "genres": [
         "Animation"
@@ -41,10 +41,22 @@
           "title": "Season 1",
           "episodes": [
             {
-              "title": "Pizza Delivery",
+              "title": "5a - Pizza Delivery",
               "duration": "11m",
               "url": "https://download.esenak.ir/Animation/SpongeBob/Shows/SBSP/SpongeBob.S1E5a.Pizza.Delivery.mp4",
-              "downloadable": true
+              "downloadable": false
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Season 9",
+          "episodes": [
+            {
+              "title": "200 - Goodbye, Krabby Patty?",
+              "duration": "23m",
+              "url": "https://download.esenak.ir/Animation/SpongeBob/Shows/SBSP/SBSP.S09E200.9.14.2026.NickToons.mp4",
+              "downloadable": false
             }
           ]
         }
