@@ -6,7 +6,7 @@
   "services": [
     {
       "suffix": "Tunes",
-      "url": "/tunes",
+      "url": "/snack-tunes.exe",
       "description": "SNACK+ Music Player"
     },
     {
