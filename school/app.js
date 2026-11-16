@@ -1,6 +1,6 @@
 /* SNACK+ School — app.js */
 const KEY = 'snackSchoolData';
-const TABS = ['notes', 'schedule', 'homework', 'exams', 'profile'];
+const TABS = ['notes', 'schedule', 'homework', 'exams', 'chat', 'profile'];
 
 const THEMES = ['snack', 'light', 'dark', 'green', 'cream'];
 const tv = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
@@ -9,7 +9,8 @@ const T = {
   en: {
     appLabel: 'School', theme: 'Theme', th_snack: 'SNACK+', th_light: 'White and blue', th_dark: 'Black and blue', th_green: 'Green', th_cream: 'Cream',
     notes: 'Notes', notePh: 'Write here…', addImage: 'Image', addText: 'Text', removeImage: 'Remove', noteImg: 'Note image', imageTooBig: 'Image is too large to save.', clearInk: 'Clear drawing', toolSelect: 'Move', toolPen: 'Pen', toolErase: 'Eraser',
-    schedule: 'Schedule', homework: 'Homework', exams: 'Exams', profile: 'Profile',
+    schedule: 'Schedule', homework: 'Homework', exams: 'Exams', profile: 'Profile', chat: 'Chat',
+    chatPh: 'Type a message…', chatAddPh: 'Friend code, e.g. maple#4821', chatAdd: 'Add', chatSend: 'Send', chatYourCode: 'Your friend code', chatCopy: 'Copy', chatCopied: 'Code copied', chatNone: 'Add a friend by code to start chatting.', chatPick: 'Choose a friend to see messages.', chatOff: 'Chat needs PeerJS, which did not load. Check your internet connection and reload.', chatBad: 'Enter a code like maple#4821.', chatSelf: 'That is your own code.', chatOffline: 'Still connecting. Try again in a moment.', chatFail: 'Could not reach that friend. They must be online with the app open.', chatTaken: 'That code was already in use, so a new one was made.',
     name: 'Name', school: 'School', grade: 'Grade', classGroup: 'Class', years: 'Years', lastLogin: 'Last login', date: 'Date',
     firstVisit: 'First visit', noPhoto: 'No photo', photoAlt: 'Profile photo',
     exportData: 'Export data', importData: 'Import data', resetData: 'Reset data', toggleLang: 'فارسی',
@@ -36,7 +37,8 @@ const T = {
   fa: {
     appLabel: 'مدرسه', theme: 'پوسته', th_snack: 'SNACK+', th_light: 'سفید و آبی', th_dark: 'سیاه و آبی', th_green: 'سبز', th_cream: 'کرمی',
     notes: 'یادداشت‌ها', notePh: 'اینجا بنویسید…', addImage: 'تصویر', addText: 'متن', removeImage: 'حذف', noteImg: 'تصویر یادداشت', imageTooBig: 'تصویر برای ذخیره کردن خیلی بزرگ است.', clearInk: 'پاک کردن نقاشی', toolSelect: 'جابه‌جایی', toolPen: 'قلم', toolErase: 'پاک‌کن',
-    schedule: 'برنامه', homework: 'تکالیف', exams: 'امتحان‌ها', profile: 'پروفایل',
+    schedule: 'برنامه', homework: 'تکالیف', exams: 'امتحان‌ها', profile: 'پروفایل', chat: 'گفتگو',
+    chatPh: 'پیامی بنویسید…', chatAddPh: 'کد دوست، مثلا maple#4821', chatAdd: 'افزودن', chatSend: 'ارسال', chatYourCode: 'کد دوست شما', chatCopy: 'کپی', chatCopied: 'کد کپی شد', chatNone: 'برای شروع گفتگو با کد یک دوست را اضافه کنید.', chatPick: 'یک دوست را انتخاب کنید.', chatOff: 'گفتگو به PeerJS نیاز دارد که بارگذاری نشد. اتصال اینترنت را بررسی و صفحه را دوباره باز کنید.', chatBad: 'کدی مثل maple#4821 وارد کنید.', chatSelf: 'این کد خودتان است.', chatOffline: 'هنوز در حال اتصال است. کمی بعد دوباره تلاش کنید.', chatFail: 'به این دوست نرسیدیم. او باید آنلاین و برنامه باز باشد.', chatTaken: 'این کد قبلا استفاده شده بود، پس کد جدیدی ساخته شد.',
     name: 'نام', school: 'مدرسه', grade: 'پایه', classGroup: 'کلاس', years: 'سال تحصیلی', lastLogin: 'آخرین ورود', date: 'تاریخ',
     firstVisit: 'اولین بازدید', noPhoto: 'بدون عکس', photoAlt: 'عکس پروفایل',
     exportData: 'خروجی داده‌ها', importData: 'وارد کردن داده', resetData: 'بازنشانی داده', toggleLang: 'English',
@@ -63,7 +65,8 @@ const T = {
 };
 
 const def = () => ({
-  profile: { name: '', school: '', grade: '', class: '', pfp: '', lastLogin: '' },
+  profile: { name: '', school: '', grade: '', class: '', pfp: '', lastLogin: '', code: '' },
+  chat: { contacts: [], msgs: {} }, // contacts: {code,name}; msgs: {code: [{me,text,at}]}
   notes: { items: [], strokes: [] }, // items: {id,t:'text'|'img',x,y,w,h,v|src}; strokes: {c,w,pts:[[x,y],..]} in board px
   schedule: { hours: [], days: [], cells: {} },
   homework: { required: [], optional: [] },
@@ -233,7 +236,7 @@ function render() {
   placeTabInd(tabs);
   renderSide();
   menuBtn.textContent = t('menu');
-  const views = { notes, schedule, homework, exams, profile };
+  const views = { notes, schedule, homework, exams, chat, profile };
   document.getElementById('main').replaceChildren(views[D.ui.tab]());
 }
 
@@ -282,6 +285,7 @@ function resetData() {
   D.profile.lastLogin = lastLogin;
   D.ui.lang = lang;
   save();
+  startPeer();
   render();
   toast(t('reset'));
 }
@@ -302,6 +306,7 @@ function importData() {
       for (const k in d) if (s[k] && typeof s[k] === 'object') Object.assign(d[k], s[k]);
       D = d;
       save();
+      startPeer();
       render();
       toast(t('imported'));
     };
@@ -748,4 +753,108 @@ menuBtn.addEventListener('click', () => setSide(!sideEl.classList.contains('open
 scrim.addEventListener('click', () => setSide(false));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') setSide(false); });
 
+// ---- Live chat (PeerJS peer-to-peer) ----
+const WORDS = ['maple', 'river', 'cloud', 'pixel', 'tiger', 'orbit', 'lemon', 'comet', 'velvet', 'harbor', 'cedar', 'ember', 'falcon', 'grove', 'meadow', 'nectar', 'quartz', 'raven', 'sable', 'timber', 'willow', 'zephyr', 'amber', 'beacon', 'canyon', 'delta', 'echo', 'fjord', 'glacier', 'hazel', 'iris', 'jade', 'kestrel', 'lotus', 'mango', 'nova', 'opal', 'pine', 'quill', 'sage'];
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const newCode = () => pick(WORDS) + '#' + (1000 + Math.floor(Math.random() * 9000));
+const peerIdOf = code => 'snackschool-' + code.replace('#', '-');
+let peer = null, chatTo = '', chatEls = null;
+const conns = {};
+
+function startPeer() {
+  if (typeof Peer === 'undefined') return;
+  if (!D.profile.code) { D.profile.code = newCode(); save(); }
+  if (peer) peer.destroy();
+  peer = new Peer(peerIdOf(D.profile.code));
+  peer.on('connection', wire);
+  peer.on('error', e => {
+    if (e.type === 'unavailable-id') {
+      D.profile.code = newCode(); save();
+      toast(t('chatTaken'));
+      startPeer();
+      renderSide();
+      if (D.ui.tab === 'chat') render();
+    }
+  });
+}
+
+function wire(c) {
+  c.on('data', m => {
+    if (!m || typeof m.from !== 'string' || typeof m.text !== 'string') return;
+    conns[m.from] = c;
+    addMsg(m.from, m.name, false, m.text);
+  });
+  c.on('close', () => { for (const k in conns) if (conns[k] === c) delete conns[k]; });
+}
+
+function sendTo(code, text) {
+  return new Promise((ok, no) => {
+    const go = c => { c.send({ from: D.profile.code, name: D.profile.name, text }); ok(); };
+    if (conns[code] && conns[code].open) return go(conns[code]);
+    const c = peer.connect(peerIdOf(code), { reliable: true });
+    const timer = setTimeout(() => no(new Error('timeout')), 10000);
+    c.on('open', () => { clearTimeout(timer); conns[code] = c; wire(c); go(c); });
+    c.on('error', () => { clearTimeout(timer); no(new Error('error')); });
+  });
+}
+
+function addMsg(code, name, me, text) {
+  const ch = D.chat;
+  if (!ch.contacts.some(c => c.code === code)) ch.contacts.push({ code, name: name || code });
+  (ch.msgs[code] = ch.msgs[code] || []).push({ me, text, at: Date.now() });
+  save();
+  if (D.ui.tab === 'chat') updateChat();
+}
+
+function addFriend(raw) {
+  const code = raw.trim().toLowerCase();
+  if (!/^[a-z]+#\d{4}$/.test(code)) return toast(t('chatBad'));
+  if (code === D.profile.code) return toast(t('chatSelf'));
+  if (!D.chat.contacts.some(c => c.code === code)) { D.chat.contacts.push({ code, name: code }); save(); }
+  chatTo = code;
+  updateChat();
+}
+
+function chat() {
+  if (typeof Peer === 'undefined') return $('div', { class: 'chat-note', text: t('chatOff') });
+  const addIn = $('input', { class: 'search', placeholder: t('chatAddPh'), 'aria-label': t('chatAddPh'), on: { keydown: e => { if (e.key === 'Enter') addFriend(addIn.value); } } });
+  const msgIn = $('input', { class: 'search', placeholder: t('chatPh'), 'aria-label': t('chatPh'), on: { keydown: e => { if (e.key === 'Enter') send(); } } });
+  const send = () => {
+    const text = msgIn.value.trim();
+    if (!text || !chatTo) return;
+    if (!peer || !peer.open) return toast(t('chatOffline'));
+    msgIn.value = '';
+    const to = chatTo;
+    addMsg(to, '', true, text);
+    sendTo(to, text).catch(() => toast(t('chatFail')));
+  };
+  chatEls = { list: $('div', { class: 'chat-side-list' }), thread: $('div', { class: 'chat-thread' }) };
+  updateChat();
+  return $('div', { class: 'chat' },
+    $('div', { class: 'chat-head' },
+      $('span', { text: t('chatYourCode') }),
+      $('b', { class: 'chat-code', text: D.profile.code }),
+      btn(t('chatCopy'), () => { navigator.clipboard && navigator.clipboard.writeText(D.profile.code); toast(t('chatCopied')); }, 'ghost')),
+    $('div', { class: 'chat-body' },
+      $('div', { class: 'chat-side' },
+        $('div', { class: 'chat-add' }, addIn, btn(t('chatAdd'), () => { addFriend(addIn.value); addIn.value = ''; }, 'primary')),
+        chatEls.list),
+      $('div', { class: 'chat-main' },
+        chatEls.thread,
+        $('div', { class: 'chat-add' }, msgIn, btn(t('chatSend'), send, 'primary')))));
+}
+
+function updateChat() {
+  if (!chatEls) return;
+  const ch = D.chat;
+  chatEls.list.replaceChildren(...(ch.contacts.length ? ch.contacts : [{ code: '', name: t('chatNone') }]).map(c => c.code
+    ? $('button', { class: 'chat-contact' + (c.code === chatTo ? ' on' : ''), text: c.name, on: { click: () => { chatTo = c.code; updateChat(); } } })
+    : $('p', { class: 'chat-note', text: c.name })));
+  const msgs = chatTo ? (ch.msgs[chatTo] || []) : null;
+  chatEls.thread.replaceChildren(...(msgs ? msgs.map(m => $('div', { class: 'bubble' + (m.me ? ' me' : ''), text: m.text })) : [$('p', { class: 'chat-note', text: t('chatPick') })]));
+  chatEls.thread.scrollTop = chatEls.thread.scrollHeight;
+}
+
+if (!D.profile.code) { D.profile.code = newCode(); save(); }
+startPeer();
 render();
