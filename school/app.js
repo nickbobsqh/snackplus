@@ -10,7 +10,7 @@ const T = {
     appLabel: 'School', theme: 'Theme', th_snack: 'SNACK+', th_light: 'White and blue', th_dark: 'Black and blue', th_green: 'Green', th_cream: 'Cream',
     notes: 'Notes', notePh: 'Write here…', addImage: 'Image', addText: 'Text', removeImage: 'Remove', noteImg: 'Note image', imageTooBig: 'Image is too large to save.', clearInk: 'Clear drawing', toolSelect: 'Move', toolPen: 'Pen', toolErase: 'Eraser',
     schedule: 'Schedule', homework: 'Homework', exams: 'Exams', profile: 'Profile', chat: 'Chat',
-    chatPh: 'Type a message…', chatAddPh: 'Friend code, e.g. maple#4821', chatAdd: 'Add', chatSend: 'Send', chatYourCode: 'Your friend code', chatCopy: 'Copy', chatCopied: 'Code copied', chatNone: 'Add a friend by code to start chatting.', chatPick: 'Choose a friend to see messages.', chatOff: 'Chat needs PeerJS, which did not load. Check your internet connection and reload.', chatBad: 'Enter a code like maple#4821.', chatSelf: 'That is your own code.', chatOffline: 'Still connecting. Try again in a moment.', chatFail: 'Could not reach that friend. They must be online with the app open.', chatTaken: 'That code was already in use, so a new one was made.',
+    chatPh: 'Type a message…', chatAddPh: 'Friend code, e.g. maple#4821', chatAdd: 'Add', chatSend: 'Send', chatYourCode: 'Your friend code', chatCopy: 'Copy', chatCopied: 'Code copied', chatNone: 'Add a friend by code to start chatting.', chatPick: 'Choose a friend to see messages.', chatOff: 'Chat needs PeerJS, which did not load. Check your internet connection and reload.', chatBad: 'Enter a code like maple#4821.', chatSelf: 'That is your own code.', chatOffline: 'Still connecting. Try again in a moment.', chatFail: 'Could not reach that friend. They must be online with the app open.', chatTaken: 'That code was already in use, so a new one was made.', chatRemove: 'Remove friend', chatClear: 'Clear chat', chatNotSent: 'Not sent', chatConfirmRm: 'Remove this friend and their messages?', chatConfirmClr: 'Delete all messages in this chat?',
     name: 'Name', school: 'School', grade: 'Grade', classGroup: 'Class', years: 'Years', lastLogin: 'Last login', date: 'Date',
     firstVisit: 'First visit', noPhoto: 'No photo', photoAlt: 'Profile photo',
     exportData: 'Export data', importData: 'Import data', resetData: 'Reset data', toggleLang: 'فارسی',
@@ -38,7 +38,7 @@ const T = {
     appLabel: 'مدرسه', theme: 'پوسته', th_snack: 'SNACK+', th_light: 'سفید و آبی', th_dark: 'سیاه و آبی', th_green: 'سبز', th_cream: 'کرمی',
     notes: 'یادداشت‌ها', notePh: 'اینجا بنویسید…', addImage: 'تصویر', addText: 'متن', removeImage: 'حذف', noteImg: 'تصویر یادداشت', imageTooBig: 'تصویر برای ذخیره کردن خیلی بزرگ است.', clearInk: 'پاک کردن نقاشی', toolSelect: 'جابه‌جایی', toolPen: 'قلم', toolErase: 'پاک‌کن',
     schedule: 'برنامه', homework: 'تکالیف', exams: 'امتحان‌ها', profile: 'پروفایل', chat: 'گفتگو',
-    chatPh: 'پیامی بنویسید…', chatAddPh: 'کد دوست، مثلا maple#4821', chatAdd: 'افزودن', chatSend: 'ارسال', chatYourCode: 'کد دوست شما', chatCopy: 'کپی', chatCopied: 'کد کپی شد', chatNone: 'برای شروع گفتگو با کد یک دوست را اضافه کنید.', chatPick: 'یک دوست را انتخاب کنید.', chatOff: 'گفتگو به PeerJS نیاز دارد که بارگذاری نشد. اتصال اینترنت را بررسی و صفحه را دوباره باز کنید.', chatBad: 'کدی مثل maple#4821 وارد کنید.', chatSelf: 'این کد خودتان است.', chatOffline: 'هنوز در حال اتصال است. کمی بعد دوباره تلاش کنید.', chatFail: 'به این دوست نرسیدیم. او باید آنلاین و برنامه باز باشد.', chatTaken: 'این کد قبلا استفاده شده بود، پس کد جدیدی ساخته شد.',
+    chatPh: 'پیامی بنویسید…', chatAddPh: 'کد دوست، مثلا maple#4821', chatAdd: 'افزودن', chatSend: 'ارسال', chatYourCode: 'کد دوست شما', chatCopy: 'کپی', chatCopied: 'کد کپی شد', chatNone: 'برای شروع گفتگو با کد یک دوست را اضافه کنید.', chatPick: 'یک دوست را انتخاب کنید.', chatOff: 'گفتگو به PeerJS نیاز دارد که بارگذاری نشد. اتصال اینترنت را بررسی و صفحه را دوباره باز کنید.', chatBad: 'کدی مثل maple#4821 وارد کنید.', chatSelf: 'این کد خودتان است.', chatOffline: 'هنوز در حال اتصال است. کمی بعد دوباره تلاش کنید.', chatFail: 'به این دوست نرسیدیم. او باید آنلاین و برنامه باز باشد.', chatTaken: 'این کد قبلا استفاده شده بود، پس کد جدیدی ساخته شد.', chatRemove: 'حذف دوست', chatClear: 'پاک کردن گفتگو', chatNotSent: 'ارسال نشد', chatConfirmRm: 'این دوست و پیام‌هایش حذف شود؟', chatConfirmClr: 'همه پیام‌های این گفتگو پاک شود؟',
     name: 'نام', school: 'مدرسه', grade: 'پایه', classGroup: 'کلاس', years: 'سال تحصیلی', lastLogin: 'آخرین ورود', date: 'تاریخ',
     firstVisit: 'اولین بازدید', noPhoto: 'بدون عکس', photoAlt: 'عکس پروفایل',
     exportData: 'خروجی داده‌ها', importData: 'وارد کردن داده', resetData: 'بازنشانی داده', toggleLang: 'English',
@@ -760,6 +760,7 @@ const newCode = () => pick(WORDS) + '#' + (1000 + Math.floor(Math.random() * 900
 const peerIdOf = code => 'snackschool-' + code.replace('#', '-');
 let peer = null, chatTo = '', chatEls = null;
 const conns = {};
+let lastMsg = null;
 
 function startPeer() {
   if (typeof Peer === 'undefined') return;
@@ -801,8 +802,14 @@ function sendTo(code, text) {
 function addMsg(code, name, me, text) {
   const ch = D.chat;
   if (!ch.contacts.some(c => c.code === code)) ch.contacts.push({ code, name: name || code });
-  (ch.msgs[code] = ch.msgs[code] || []).push({ me, text, at: Date.now() });
+  const ct = ch.contacts.find(c => c.code === code);
+  if (!me && name && ct.name === code) ct.name = name;
+  const m = { me, text, at: Date.now() };
+  (ch.msgs[code] = ch.msgs[code] || []).push(m);
+  ch.unread = ch.unread || {};
+  if (!me && !(D.ui.tab === 'chat' && chatTo === code)) ch.unread[code] = (ch.unread[code] || 0) + 1;
   save();
+  lastMsg = m;
   if (D.ui.tab === 'chat') updateChat();
 }
 
@@ -826,9 +833,10 @@ function chat() {
     msgIn.value = '';
     const to = chatTo;
     addMsg(to, '', true, text);
-    sendTo(to, text).catch(() => toast(t('chatFail')));
+    const mine = lastMsg;
+    sendTo(to, text).catch(() => { mine.failed = true; save(); updateChat(); toast(t('chatFail')); });
   };
-  chatEls = { list: $('div', { class: 'chat-side-list' }), thread: $('div', { class: 'chat-thread' }) };
+  chatEls = { list: $('div', { class: 'chat-side-list' }), thread: $('div', { class: 'chat-thread' }), bar: $('div', { class: 'chat-bar' }) };
   updateChat();
   return $('div', { class: 'chat' },
     $('div', { class: 'chat-head' },
@@ -840,6 +848,7 @@ function chat() {
         $('div', { class: 'chat-add' }, addIn, btn(t('chatAdd'), () => { addFriend(addIn.value); addIn.value = ''; }, 'primary')),
         chatEls.list),
       $('div', { class: 'chat-main' },
+        chatEls.bar,
         chatEls.thread,
         $('div', { class: 'chat-add' }, msgIn, btn(t('chatSend'), send, 'primary')))));
 }
@@ -847,11 +856,24 @@ function chat() {
 function updateChat() {
   if (!chatEls) return;
   const ch = D.chat;
+  ch.unread = ch.unread || {};
+  if (chatTo && !ch.contacts.some(c => c.code === chatTo)) chatTo = '';
+  if (chatTo && ch.unread[chatTo]) { delete ch.unread[chatTo]; save(); }
   chatEls.list.replaceChildren(...(ch.contacts.length ? ch.contacts : [{ code: '', name: t('chatNone') }]).map(c => c.code
-    ? $('button', { class: 'chat-contact' + (c.code === chatTo ? ' on' : ''), text: c.name, on: { click: () => { chatTo = c.code; updateChat(); } } })
+    ? $('button', { class: 'chat-contact' + (c.code === chatTo ? ' on' : ''), on: { click: () => { chatTo = c.code; updateChat(); } } },
+        $('span', { text: c.name }), ...(ch.unread[c.code] ? [$('span', { class: 'chat-badge', text: String(ch.unread[c.code]) })] : []))
     : $('p', { class: 'chat-note', text: c.name })));
+  const cur = ch.contacts.find(c => c.code === chatTo);
+  chatEls.bar.replaceChildren(...(cur ? [
+    $('b', { text: cur.name + (cur.name === cur.code ? '' : '  ' + cur.code) }),
+    btn(t('chatClear'), () => { if (confirm(t('chatConfirmClr'))) { ch.msgs[chatTo] = []; save(); updateChat(); } }, 'ghost'),
+    btn(t('chatRemove'), () => { if (confirm(t('chatConfirmRm'))) { ch.contacts = ch.contacts.filter(c => c.code !== chatTo); delete ch.msgs[chatTo]; delete ch.unread[chatTo]; chatTo = ''; save(); updateChat(); } }, 'danger')] : []));
+  const fmt = at => new Date(at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const msgs = chatTo ? (ch.msgs[chatTo] || []) : null;
-  chatEls.thread.replaceChildren(...(msgs ? msgs.map(m => $('div', { class: 'bubble' + (m.me ? ' me' : ''), text: m.text })) : [$('p', { class: 'chat-note', text: t('chatPick') })]));
+  chatEls.thread.replaceChildren(...(msgs ? msgs.map(m => $('div', { class: 'bubble' + (m.me ? ' me' : '') },
+    $('div', { text: m.text }),
+    $('small', { class: 'bubble-time', text: fmt(m.at) + (m.failed ? ' \u00b7 ' + t('chatNotSent') : '') })))
+    : [$('p', { class: 'chat-note', text: t('chatPick') })]));
   chatEls.thread.scrollTop = chatEls.thread.scrollHeight;
 }
 
