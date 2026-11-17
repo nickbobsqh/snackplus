@@ -757,18 +757,24 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') setSide(fals
 const WORDS = ['maple', 'river', 'cloud', 'pixel', 'tiger', 'orbit', 'lemon', 'comet', 'velvet', 'harbor', 'cedar', 'ember', 'falcon', 'grove', 'meadow', 'nectar', 'quartz', 'raven', 'sable', 'timber', 'willow', 'zephyr', 'amber', 'beacon', 'canyon', 'delta', 'echo', 'fjord', 'glacier', 'hazel', 'iris', 'jade', 'kestrel', 'lotus', 'mango', 'nova', 'opal', 'pine', 'quill', 'sage'];
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const newCode = () => pick(WORDS) + '#' + (1000 + Math.floor(Math.random() * 9000));
-const peerIdOf = code => 'snackschool-' + code.replace('#', '-');
+const peerIdOf = code => 'snackschool-' + code.toLowerCase().replace('#', '-');
 let peer = null, chatTo = '', chatEls = null;
 const conns = {};
-let lastMsg = null;
+let lastMsg = null, peerState = 'connecting', peerErr = '';
+const setState = (st, err = '') => { peerState = st; peerErr = err; const el = document.getElementById('chatState'); if (el) el.textContent = stateText(); };
+const stateText = () => peerState === 'online' ? 'Connected' : peerState === 'connecting' ? 'Connecting to server...' : 'Not connected' + (peerErr ? ': ' + peerErr : '');
 
 function startPeer() {
   if (typeof Peer === 'undefined') return;
   if (!D.profile.code) { D.profile.code = newCode(); save(); }
   if (peer) peer.destroy();
+  setState('connecting');
   peer = new Peer(peerIdOf(D.profile.code));
+  peer.on('open', () => setState('online'));
+  peer.on('disconnected', () => { setState('offline', 'lost server'); try { peer.reconnect(); } catch (e) {} });
   peer.on('connection', wire);
   peer.on('error', e => {
+    if (e.type !== 'unavailable-id' && e.type !== 'peer-unavailable') setState('offline', e.type);
     if (e.type === 'unavailable-id') {
       D.profile.code = newCode(); save();
       toast(t('chatTaken'));
@@ -794,6 +800,8 @@ function sendTo(code, text) {
     if (conns[code] && conns[code].open) return go(conns[code]);
     const c = peer.connect(peerIdOf(code), { reliable: true });
     const timer = setTimeout(() => no(new Error('timeout')), 10000);
+    const pe = e => { if (e.type === 'peer-unavailable') { clearTimeout(timer); peer.off('error', pe); no(new Error('offline')); } };
+    peer.on('error', pe);
     c.on('open', () => { clearTimeout(timer); conns[code] = c; wire(c); go(c); });
     c.on('error', () => { clearTimeout(timer); no(new Error('error')); });
   });
@@ -829,7 +837,7 @@ function chat() {
   const send = () => {
     const text = msgIn.value.trim();
     if (!text || !chatTo) return;
-    if (!peer || !peer.open) return toast(t('chatOffline'));
+    if (!peer || !peer.open) return toast(stateText());
     msgIn.value = '';
     const to = chatTo;
     addMsg(to, '', true, text);
@@ -842,6 +850,7 @@ function chat() {
     $('div', { class: 'chat-head' },
       $('span', { text: t('chatYourCode') }),
       $('b', { class: 'chat-code', text: D.profile.code }),
+      $('span', { id: 'chatState', class: 'chat-note', text: stateText() }),
       btn(t('chatCopy'), () => { navigator.clipboard && navigator.clipboard.writeText(D.profile.code); toast(t('chatCopied')); }, 'ghost')),
     $('div', { class: 'chat-body' },
       $('div', { class: 'chat-side' },
