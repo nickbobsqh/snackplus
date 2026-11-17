@@ -1,6 +1,6 @@
 /* SNACK+ School — app.js */
 const KEY = 'snackSchoolData';
-const TABS = ['notes', 'schedule', 'homework', 'exams', 'profile'];
+const TABS = ['notes', 'schedule', 'homework', 'exams', 'online', 'profile'];
 
 const THEMES = ['snack', 'light', 'dark', 'green', 'cream'];
 const tv = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
@@ -9,7 +9,7 @@ const T = {
   en: {
     appLabel: 'School', theme: 'Theme', th_snack: 'SNACK+', th_light: 'White and blue', th_dark: 'Black and blue', th_green: 'Green', th_cream: 'Cream',
     notes: 'Notes', notePh: 'Write here…', addImage: 'Image', addText: 'Text', removeImage: 'Remove', noteImg: 'Note image', imageTooBig: 'Image is too large to save.', clearInk: 'Clear drawing', toolSelect: 'Move', toolPen: 'Pen', toolErase: 'Eraser',
-    schedule: 'Schedule', homework: 'Homework', exams: 'Exams', profile: 'Profile',
+    schedule: 'Schedule', homework: 'Homework', exams: 'Exams', profile: 'Profile', online: 'Online classes', linksH: 'Class links', onlineSchedule: 'Online class schedule', linkName: 'Class name', linkUrl: 'Link (https://…)', addLink: '+ Add link', openLink: 'Open',
     name: 'Name', school: 'School', grade: 'Grade', classGroup: 'Class', years: 'Years', lastLogin: 'Last login', date: 'Date',
     firstVisit: 'First visit', noPhoto: 'No photo', photoAlt: 'Profile photo',
     exportData: 'Export data', importData: 'Import data', resetData: 'Reset data', toggleLang: 'فارسی',
@@ -36,7 +36,7 @@ const T = {
   fa: {
     appLabel: 'مدرسه', theme: 'پوسته', th_snack: 'SNACK+', th_light: 'سفید و آبی', th_dark: 'سیاه و آبی', th_green: 'سبز', th_cream: 'کرمی',
     notes: 'یادداشت‌ها', notePh: 'اینجا بنویسید…', addImage: 'تصویر', addText: 'متن', removeImage: 'حذف', noteImg: 'تصویر یادداشت', imageTooBig: 'تصویر برای ذخیره کردن خیلی بزرگ است.', clearInk: 'پاک کردن نقاشی', toolSelect: 'جابه‌جایی', toolPen: 'قلم', toolErase: 'پاک‌کن',
-    schedule: 'برنامه', homework: 'تکالیف', exams: 'امتحان‌ها', profile: 'پروفایل',
+    schedule: 'برنامه', homework: 'تکالیف', exams: 'امتحان‌ها', profile: 'پروفایل', online: 'کلاس‌های آنلاین', linksH: 'لینک کلاس‌ها', onlineSchedule: 'برنامه کلاس‌های آنلاین', linkName: 'نام کلاس', linkUrl: 'لینک (https://…)', addLink: '+ افزودن لینک', openLink: 'باز کردن',
     name: 'نام', school: 'مدرسه', grade: 'پایه', classGroup: 'کلاس', years: 'سال تحصیلی', lastLogin: 'آخرین ورود', date: 'تاریخ',
     firstVisit: 'اولین بازدید', noPhoto: 'بدون عکس', photoAlt: 'عکس پروفایل',
     exportData: 'خروجی داده‌ها', importData: 'وارد کردن داده', resetData: 'بازنشانی داده', toggleLang: 'English',
@@ -68,6 +68,7 @@ const def = () => ({
   schedule: { hours: [], days: [], cells: {} },
   homework: { required: [], optional: [] },
   exams: { exams: [], quizzes: [] },
+  online: { links: [], schedule: { hours: [], days: [], cells: {} } },
   ui: { tab: 'notes', lang: 'en', theme: 'snack' },
 });
 
@@ -233,7 +234,7 @@ function render() {
   placeTabInd(tabs);
   renderSide();
   menuBtn.textContent = t('menu');
-  const views = { notes, schedule, homework, exams, profile };
+  const views = { notes, schedule, homework, exams, online, profile };
   document.getElementById('main').replaceChildren(views[D.ui.tab]());
 }
 
@@ -428,8 +429,7 @@ async function exportSchedule() {
 }
 
 /* ---------- Schedule ---------- */
-function schedule() {
-  const S = D.schedule;
+function schedule(S = D.schedule, exportable = true) {
   // Data: S.days = rows, S.hours = columns, S.cells keyed 'dayIndex|hourIndex'.
   const cell = (r, i) => S.cells[r + '|' + i] || '';
   const colUsed = i => S.days.some((_, r) => cell(r, i));
@@ -476,7 +476,7 @@ function schedule() {
     $('div', { class: 'actions' },
       btn(t('addDay'), () => { S.days.push(''); save(); render(); }),
       btn(t('addHour'), () => { S.hours.push(ord(S.hours.length + 1)); save(); render(); }),
-      btn(t('exportSchedule'), () => exportSchedule(), 'primary'),
+      exportable ? btn(t('exportSchedule'), () => exportSchedule(), 'primary') : null,
       btn(t('rtlSwitch') + ': ' + (D.ui.schedRtl ? 'ON' : 'OFF'), () => { D.ui.schedRtl = !D.ui.schedRtl; save(); render(); })));
 }
 
@@ -684,6 +684,33 @@ function exams() {
     list(X.quizzes, ['title', 'date'], [t('quizTitle'), t('quizDate')], t('addQuiz'), { filter: opts.filter, dateKey: 'date' }));
   renderList = draw; draw();
   return $('section', { class: 'card' }, searchBox(X), box);
+}
+
+/* ---------- Online classes ---------- */
+function onlineLinks() {
+  const L = D.online.links;
+  const wrap = $('div', { class: 'list' });
+  if (!L.length) wrap.append($('p', { class: 'empty', text: t('nothing') }));
+  L.forEach(it => {
+    const ok = /^https?:\/\//i.test(it.url || '');
+    const row = $('div', { class: 'row' });
+    row.append(ed(() => it.name, v => it.name = v, t('linkName'), 'main'));
+    row.append(ed(() => it.url, v => it.url = v, t('linkUrl')));
+    if (ok) row.append($('a', { class: 'btn ghost', href: it.url, target: '_blank', rel: 'noopener noreferrer', text: t('openLink') }));
+    row.append(icon('−', () => {
+      if (!sure(Boolean(it.name || it.url))) return;
+      L.splice(L.indexOf(it), 1); save(); render();
+    }, t('remove')));
+    wrap.append(row);
+  });
+  wrap.append($('div', { class: 'actions' }, btn(t('addLink'), () => { L.push({ name: '', url: '' }); save(); render(); })));
+  return wrap;
+}
+
+function online() {
+  return $('section', { class: 'card' },
+    $('h2', { text: t('linksH') }), onlineLinks(),
+    $('h2', { text: t('onlineSchedule') }), schedule(D.online.schedule, false));
 }
 
 /* ---------- Profile ---------- */
