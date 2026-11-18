@@ -21,7 +21,7 @@ school:'M5 13.200v4l7 3.800 7-3.800v-4l-7 3.800zM12 3 1 9l11 6 9-4.900V17h2V9z',
 music:'M12 3v10.600A4 4 0 1 0 14 17V7h4V3z',
 down:'M7 10l5 5 5-5z',edit:'M3 17.250V21h3.750L17.810 9.940l-3.750-3.750zM20.710 7.040a1 1 0 0 0 0-1.410l-2.340-2.340a1 1 0 0 0-1.410 0l-1.830 1.830 3.750 3.750z'};
 const ic=(n,c='')=>`<svg class="i ${c}" viewBox="0 0 24 24"><path d="${ICONS[n]}"/></svg>`;
-const THEMES={snack:['SNACK+','#FF6710'],light:['Light','#006EDD'],dark:['Dark','#3189ED'],green:['Green','#33DD89'],cream:['Cream','#BA6522']};
+const THEMES={snack:['SNACK+','#FF6710'],light:['Light','#006EDD'],dark:['Dark','#3189ED'],pink:['Pink','#FF4F9A'],green:['Green','#33DD89'],cream:['Cream','#BA6522']};
 const store={get(k,d){try{const v=localStorage.getItem('snack.'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){localStorage.setItem('snack.'+k,JSON.stringify(v))}};
 function applyTheme(t){if(!THEMES[t])t='snack';document.documentElement.dataset.theme=t;store.set('theme',t)}
 applyTheme(store.get('theme','snack'));
