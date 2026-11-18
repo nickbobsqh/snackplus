@@ -2,12 +2,12 @@
 const KEY = 'snackSchoolData';
 const TABS = ['notes', 'schedule', 'homework', 'exams', 'online', 'profile'];
 
-const THEMES = ['snack', 'light', 'dark', 'green', 'cream'];
+const THEMES = ['snack', 'light', 'dark', 'pink', 'green', 'cream'];
 const tv = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 let penPicked = false, penChoice = ''; // penChoice is set only when the user picks a pen color by hand
 const T = {
   en: {
-    appLabel: 'School', theme: 'Theme', th_snack: 'SNACK+', th_light: 'White and blue', th_dark: 'Black and blue', th_green: 'Green', th_cream: 'Cream',
+    appLabel: 'School', theme: 'Theme', th_snack: 'SNACK+', th_light: 'White and blue', th_dark: 'Black and blue', th_green: 'Green', th_cream: 'Cream', th_pink: 'Pink',
     notes: 'Notes', notePh: 'Write here…', addImage: 'Image', addText: 'Text', removeImage: 'Remove', noteImg: 'Note image', imageTooBig: 'Image is too large to save.', clearInk: 'Clear drawing', toolSelect: 'Move', toolPen: 'Pen', toolErase: 'Eraser',
     schedule: 'Schedule', homework: 'Homework', exams: 'Exams', profile: 'Profile', online: 'Online classes', linksH: 'Class links', onlineSchedule: 'Online class schedule', linkName: 'Class name', linkUrl: 'Link (https://…)', addLink: '+ Add link', openLink: 'Open',
     name: 'Name', school: 'School', grade: 'Grade', classGroup: 'Class', years: 'Years', lastLogin: 'Last login', date: 'Date',
@@ -34,7 +34,7 @@ const T = {
     badImage: 'That file is not a supported image.',
   },
   fa: {
-    appLabel: 'مدرسه', theme: 'پوسته', th_snack: 'SNACK+', th_light: 'سفید و آبی', th_dark: 'سیاه و آبی', th_green: 'سبز', th_cream: 'کرمی',
+    appLabel: 'مدرسه', theme: 'پوسته', th_snack: 'SNACK+', th_light: 'سفید و آبی', th_dark: 'سیاه و آبی', th_green: 'سبز', th_cream: 'کرمی', th_pink: 'صورتی',
     notes: 'یادداشت‌ها', notePh: 'اینجا بنویسید…', addImage: 'تصویر', addText: 'متن', removeImage: 'حذف', noteImg: 'تصویر یادداشت', imageTooBig: 'تصویر برای ذخیره کردن خیلی بزرگ است.', clearInk: 'پاک کردن نقاشی', toolSelect: 'جابه‌جایی', toolPen: 'قلم', toolErase: 'پاک‌کن',
     schedule: 'برنامه', homework: 'تکالیف', exams: 'امتحان‌ها', profile: 'پروفایل', online: 'کلاس‌های آنلاین', linksH: 'لینک کلاس‌ها', onlineSchedule: 'برنامه کلاس‌های آنلاین', linkName: 'نام کلاس', linkUrl: 'لینک (https://…)', addLink: '+ افزودن لینک', openLink: 'باز کردن',
     name: 'نام', school: 'مدرسه', grade: 'پایه', classGroup: 'کلاس', years: 'سال تحصیلی', lastLogin: 'آخرین ورود', date: 'تاریخ',

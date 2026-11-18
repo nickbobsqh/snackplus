@@ -19,6 +19,11 @@ html[data-theme="green"] {
   --bg:#0f2a1a; --panel:#173a25; --panel-2:#1f4a30; --hover:#2a5e3d; --text:#eaf8ef; --muted:#a6cdb3;
   --line:#2f6a45; --line-2:#4f9168; --accent:#3ddc84; --accent-2:#6ff0a6; --secondary:#6ff0a6; --on-accent:#05210f; --danger:#ffb4a8; --board:#0b2015;
 }
+html[data-theme="pink"] {
+  --logo:#ff4f9a;
+  --bg:#2a0a1b; --panel:#3d1227; --panel-2:#4d1934; --hover:#5e2242; --text:#ffeef5; --muted:#d9a6bd;
+  --line:#5f2a47; --line-2:#8a4368; --accent:#ff4f9a; --accent-2:#ff7ab3; --secondary:#ff7ab3; --on-accent:#2a0014; --danger:#ffb4a8; --board:#200817;
+}
 html[data-theme="cream"] {
   --logo:#b8651b;
   --bg:#f5ecd7; --panel:#fffaf0; --panel-2:#f8f0dc; --hover:#eddfc0; --text:#3b2f1e; --muted:#7a6a50;
@@ -368,9 +373,8 @@ tr:last-child > * { border-bottom: 0; }
 /* Material 3 (solid tonal colors, no transparency) */
 :root { --shape-xl: 40px; --shape-l: 16px; --shape-m: 12px; --shape-full: 999px; }
 html[data-theme="light"], html[data-theme="cream"] { color-scheme: light; }
-html[data-theme="snack"], html[data-theme="dark"], html[data-theme="green"] { color-scheme: dark; }
+html[data-theme="snack"], html[data-theme="dark"], html[data-theme="green"], html[data-theme="pink"] { color-scheme: dark; }
 html { color-scheme: dark; }
-html[data-theme="light"], html[data-theme="cream"] { color-scheme: light; }
 html[data-theme] { --m3-surface: var(--bg); --m3-container: var(--panel); --m3-container-hi: var(--panel-2); --m3-hover: var(--hover); }
 
 .panel { border: 0; border-radius: var(--shape-xl); background: var(--panel); }
