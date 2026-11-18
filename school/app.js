@@ -2,7 +2,7 @@
 const KEY = 'snackSchoolData';
 const TABS = ['notes', 'schedule', 'homework', 'exams', 'online', 'profile'];
 
-const THEMES = ['snack', 'light', 'dark', 'pink', 'green', 'cream'];
+const THEMES = ['snack', 'light', 'dark', 'pink', 'cream', 'green'];
 const tv = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 let penPicked = false, penChoice = ''; // penChoice is set only when the user picks a pen color by hand
 const T = {
