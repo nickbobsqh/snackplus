@@ -6,6 +6,7 @@
 [data-theme=cream]{--bg:#F6ECD8;--main:#FFFAF0;--act:#BA6522;--txt:#3a2812;--sub:#7d6a52;--line:#e6d6b8;--onact:#fff}
 [data-theme=snack]{--onact:#fff}
 html,body{margin:0;height:100%}
+input,select,textarea{box-sizing:border-box;max-width:100%}
 body{background:var(--bg);color:var(--txt);font-family:Roboto,system-ui,"Segoe UI",Tahoma,sans-serif;font-size:15px}
 svg.i{width:24px;height:24px;fill:currentColor;flex:none}
 button,input,select,textarea{font:inherit;color:inherit}

@@ -3,17 +3,19 @@
 <title>SNACK+ Editor</title><link rel="icon" href="icon.ico"><link rel="stylesheet" href="style.css">
 <style>
 body{display:flex;flex-direction:column}
+.pad{padding:24px 28px}.pad h2{margin:0 0 14px;color:var(--act)}.hide{display:none!important}
+#form h2{margin:0 0 10px;color:var(--act)}
 header{display:flex;align-items:center;gap:12px;padding:10px 20px;flex-wrap:wrap}
 header .logo{width:52px;height:50px}
 header b{font-size:26px;font-weight:800;color:var(--act)}
 header .sp{flex:1}
-.wrap{flex:1;display:grid;grid-template-columns:300px 1fr;gap:16px;padding:0 20px 20px;min-height:0}
+.wrap{flex:1;display:grid;grid-template-columns:300px 1fr;gap:16px;padding:0 20px 20px;min-height:0;grid-template-rows:minmax(0,1fr)}
 .pane{background:var(--main);border-radius:28px;padding:16px;overflow:auto}
 .li{display:flex;align-items:center;gap:10px;width:100%;border:0;background:var(--bg);border-radius:16px;padding:8px;margin-bottom:8px;text-align:left}
 .li.on{outline:2px solid var(--act)}
 .li img{width:36px;height:54px;object-fit:cover;border-radius:8px;background:var(--line)}
 .li small{color:var(--sub);display:block}
-.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0 14px}
+.g2>*,.epr>*,.pane{min-width:0}.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0 14px}
 .ck{display:flex;gap:18px;flex-wrap:wrap;margin:14px 0}
 .ck label{display:flex;gap:8px;align-items:center;font-weight:600}
 input[type=checkbox]{width:20px;height:20px;accent-color:var(--act)}
@@ -22,7 +24,7 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--act)}
 .epr label{display:flex;gap:4px;align-items:center;font-size:12px;white-space:nowrap}
 h3{color:var(--act);margin:18px 0 6px}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-@media(max-width:800px){.wrap{grid-template-columns:1fr}.epr{grid-template-columns:1fr 1fr}}
+@media(max-width:800px){html,body{height:auto}.wrap{grid-template-columns:1fr;grid-template-rows:none}.pane{overflow:visible}.epr{grid-template-columns:1fr 1fr}}
 </style></head><body>
 <header><a class="logo" href="./" aria-label="SNACK+"></a><b>Editor</b><span class="sp"></span>
 <button class="btn sm" id="load">Load data.json</button><button class="btn sm" id="imp">Import file</button><input type="file" id="f" accept=".json" class="hide" style="display:none">
