@@ -35,32 +35,7 @@
       "subbed": false,
       "dubbed": false,
       "exclusive": false,
-      "seasons": [
-        {
-          "number": 1,
-          "title": "Season 1",
-          "episodes": [
-            {
-              "title": "5a - Pizza Delivery",
-              "duration": "11m",
-              "url": "https://download.esenak.ir/Animation/SpongeBob/Shows/SBSP/SpongeBob.S1E5a.Pizza.Delivery.mp4",
-              "downloadable": false
-            }
-          ]
-        },
-        {
-          "number": 2,
-          "title": "Season 9",
-          "episodes": [
-            {
-              "title": "200 - Goodbye, Krabby Patty?",
-              "duration": "23m",
-              "url": "https://download.esenak.ir/Animation/SpongeBob/Shows/SBSP/SBSP.S09E200.9.14.2026.NickToons.mp4",
-              "downloadable": false
-            }
-          ]
-        }
-      ]
+      "seasons": []
     }
   ]
 }
